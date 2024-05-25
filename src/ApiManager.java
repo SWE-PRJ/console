@@ -2,15 +2,18 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Map;
 
 public class ApiManager {//singleton pattern
-    private static final ApiManager instance=new ApiManager();
-    private ApiManager(){}
-    public static ApiManager getInstance(){
+    private static final ApiManager instance = new ApiManager();
+
+    private ApiManager() {
+    }
+
+    public static ApiManager getInstance() {
         return instance;
     }
-    private void setupRequest(){
+
+    private void setupRequest() {
         util.clearConsole();
         System.out.println("Waiting for response...");
     }
