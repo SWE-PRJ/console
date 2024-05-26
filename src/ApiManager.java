@@ -84,6 +84,8 @@ public class ApiManager {//singleton pattern
     }
 
     List<Issue> requestListOfIssue(String projectName) throws InterruptedException {
+        List<Comment> comments = new ArrayList<>();
+        comments = requestListOfComment(projectName, "Issue1");
         List<Issue> issues = new ArrayList<>();
         Issue issue1 = new Issue("Issue1", "This is issue1", new ArrayList<>(), "Open", "High");
         Issue issue2 = new Issue("Issue2", "This is issue2", new ArrayList<>(), "Open", "High");
@@ -92,4 +94,12 @@ public class ApiManager {//singleton pattern
         return issues;
     }
 
+    List<Comment> requestListOfComment(String projectName, String issueName) throws InterruptedException {
+        List<Comment> comments = new ArrayList<>();
+        Comment comment1 = new Comment(0, 0, "This is comment1");
+        Comment comment2 = new Comment(0, 0, "This is comment2");
+        comments.add(comment1);
+        comments.add(comment2);
+        return comments;
+    }
 }

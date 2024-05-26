@@ -5,6 +5,14 @@ import java.util.Map;
 public class util {
     static ApiManager apiManager = ApiManager.getInstance();
 
+    public static void waitForEnter(){
+        System.out.print("Press 'enter' to continue..");
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     public static void clearConsole() {
         try {
             ProcessBuilder processBuilder;
@@ -20,6 +28,10 @@ public class util {
             e.printStackTrace();
         }
     }
+    public static void wrondCommand() {
+        System.out.println("Wrong command. Try again.");
+        waitForEnter();
+    }
 
     public static void mainHelp() {
         util.clearConsole();
@@ -27,15 +39,7 @@ public class util {
         System.out.println("1. 'make project' - Create a new project(Admin only)");
         System.out.println("2. 'travel project' - Move to a project");
         System.out.println("3. 'exit' - Exit the program");
-        while (true) {
-            System.out.print("Press 'enter' to go back.. ");
-            try {
-                System.in.read();
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        waitForEnter();
     }
 
     public static void projectsHelp() {
@@ -43,15 +47,7 @@ public class util {
         System.out.println("Available commands:");
         System.out.println("1. 'exit' - Exit the directory");
         System.out.println("2. 'goto [project index]' - Move to the project to see the issues");
-        while (true) {
-            System.out.print("Press 'enter' to go back.. ");
-            try {
-                System.in.read();
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        waitForEnter();
     }
 
     public static void issueHelp() {
@@ -61,38 +57,15 @@ public class util {
         System.out.println("2. 'goto [issue index]' - Move to the issue");
         System.out.println("3. 'create issue' - Create a new issue");
         System.out.println("4. 'edit issue [issue index]' - Edit the issue");
-        while (true) {
-            System.out.print("Press 'enter' to go back.. ");
-            try {
-                System.in.read();
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        waitForEnter();
     }
 
-    public static void gotoProject(Project project) throws IOException, InterruptedException {
-        while (true) {
-            List<Issue> issues = apiManager.requestListOfIssue(project.Name);
-            clearConsole();
-            System.out.println("You are now in the '" + project.Name + "' project.");
-            System.out.println("There is issues as below.");
-            for (int i = 0; i < issues.size(); i++) {
-                System.out.println(i + 1 + ")" + "Issue Name: " + issues.get(i).title + " | Status: " + issues.get(i).status + " | Priority: " + issues.get(i).priority + " | Description: " + issues.get(i).description);
-            }
-            System.out.println("Please type command. Type 'help' to see the list of commands.");
-            System.out.print(">> ");
-            String input = Main.reader.readLine();
-            if (input.equals("help")) {
-                issueHelp();
-            } else if (input.equals("exit")) {
-                break;
-            } else if (input.startsWith("goto")) {
-                String[] split = input.split(" ");
-                int index = Integer.parseInt(split[1]) - 1;
-                //util.gotoIssue(project.Issues.get(index));
-            }
-        }
+    public static void detailIssueHelp() {
+        util.clearConsole();
+        System.out.println("Available commands:");
+        System.out.println("1. 'exit' - Exit the issue");
+        System.out.println("2. 'edit' - Edit the issue");
+        System.out.println("3. 'comment' - Comment the issue");
+        waitForEnter();
     }
 }
