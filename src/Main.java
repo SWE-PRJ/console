@@ -8,31 +8,16 @@ public class Main {
     static User user = null;
     static ApiManager apiManager = ApiManager.getInstance();
 
-    public static void mainHelp() {
-        util.clearConsole();
-        System.out.println("Available commands:");
-        System.out.println("1. 'make project' - Create a new project(Admin only)");
-        System.out.println("2. 'travel project' - Move to a project");
-        System.out.println("3. 'exit' - Exit the program");
-        while (true) {
-            System.out.print("Press 'enter' to go back.. ");
-            try {
-                System.in.read();
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public static void makeProject() throws InterruptedException, IOException {
         System.out.print("Please enter the project name >> ");
         String projectName = reader.readLine();
         System.out.println("Creating a new project...");
         apiManager.requestCreateProject(user);
         System.out.println("Project created successfully.");
+        int member;
         System.out.print("Please enter the number of member you want to invite >> ");
-        int member = Integer.parseInt(reader.readLine());
+        String memberSTR = reader.readLine();
+        member = Integer.parseInt(memberSTR);
         for (int i = 0; i < member; i++) {
             System.out.print("Please enter the member name >> ");
             String memberName = reader.readLine();
@@ -41,7 +26,7 @@ public class Main {
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        String input = "";
+        String input = null;
         boolean signedIn = false;
 
 
@@ -78,20 +63,25 @@ public class Main {
             }
         }
         //서비스 로직
+        label:
         while (true) {
             util.clearConsole();
             System.out.println("Welcome to Issue Management!");
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             input = reader.readLine();
-            if (input.equals("help")) {
-                mainHelp();
-            } else if (input.equals("make project")) {
-                makeProject();
-            } else if (input.equals("travel project")) {
-                travelProject();
-            } else if (input.equals("exit")) {
-                break;
+            switch (input) {
+                case "help":
+                    util.mainHelp();
+                    break;
+                case "make project":
+                    makeProject();
+                    break;
+                case "travel project":
+                    travelProject();
+                    break;
+                case "exit":
+                    break label;
             }
         }
     }
@@ -109,48 +99,13 @@ public class Main {
             System.out.print(">> ");
             String input = reader.readLine();
             if (input.equals("help")) {
-                projectsHelp();
+                util.projectsHelp();
+            } else if (input.contains("edit")) {
+                //util.projectEdit();
             } else if (input.equals("exit")) {
                 break;
-            } else {
-                int projectIndex = Integer.parseInt(input) - 1;
-                System.out.println("You are in the project " + projects.get(projectIndex).Name);
-                System.out.println("Please type command. Type 'help' to see the list of commands.");
-                System.out.print(">> ");
-                input = reader.readLine();
-                if (input.equals("help")) {
-                    mainHelp();
-                } else if (input.equals("exit")) {
-                    break;
-                } else if (input.contains("details")) {
-                    System.out.println("Project Name: " + projects.get(projectIndex).Name + " | Created Date: " + projects.get(projectIndex).CreatedDate + " | Description: " + projects.get(projectIndex).Description);
-                } else if (input.contains("edit")) {
-                    System.out.print("Please enter the new project name >> ");
-                    String projectName = reader.readLine();
-                    System.out.println("Editing the project...");
-                    apiManager.requestEditProject(projectName);
-                    System.out.println("Project edited successfully.");
-                } else {
-                    System.out.println("Wrong input. Try again.");
-                }
             }
-        }
-    }
 
-    private static void projectsHelp() {
-        util.clearConsole();
-        System.out.println("Available commands:");
-        System.out.println("1. 'exit' - Exit the project");
-        System.out.println("2. 'details [project index]' - Show the details of the project");
-        System.out.println("3. 'edit [project index]' - Edit the project");
-        while (true) {
-            System.out.print("Press 'enter' to go back.. ");
-            try {
-                System.in.read();
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

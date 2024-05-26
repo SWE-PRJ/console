@@ -80,15 +80,7 @@ public class ApiManager {//singleton pattern
     }
 
     boolean requestInviteMember(String memberName) throws InterruptedException {
-        setupRequest();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:3000/Project"))
-                //.POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .join();
-        return true;
+        return false;
     }
 
     public void requestEditProject(String projectName) {
