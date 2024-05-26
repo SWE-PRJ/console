@@ -2,6 +2,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ApiManager {//singleton pattern
     private static final ApiManager instance = new ApiManager();
@@ -30,7 +33,6 @@ public class ApiManager {//singleton pattern
                 .build();
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
-                .thenAccept(System.out::println)
                 .join();
         return true;
     }
@@ -44,8 +46,51 @@ public class ApiManager {//singleton pattern
                 .build();
         client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
-                .thenAccept(System.out::println)
                 .join();
         return true;
+    }
+
+    boolean requestCreateProject(User user) throws InterruptedException {
+        setupRequest();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:3000/Project"))
+                //.POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .join();
+        return true;
+    }
+
+    List<Project> requestListOfProject() throws InterruptedException {
+//        setupRequest();
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .uri(URI.create("http://localhost:3000/Project"))
+//                //.POST(HttpRequest.BodyPublishers.ofString(json))
+//                .build();
+//        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+//                .thenApply(HttpResponse::body)
+//                .join();
+        List<Project> projects = new ArrayList<>();
+        Project project1 = new Project("Project1", new Date(), "This is project1");
+        Project project2 = new Project("Project2", new Date(), "This is project2");
+        projects.add(project1);
+        projects.add(project2);
+        return projects;
+    }
+
+    boolean requestInviteMember(String memberName) throws InterruptedException {
+        setupRequest();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:3000/Project"))
+                //.POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenApply(HttpResponse::body)
+                .join();
+        return true;
+    }
+
+    public void requestEditProject(String projectName) {
     }
 }
