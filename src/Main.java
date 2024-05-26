@@ -8,6 +8,30 @@ public class Main {
     static User user = null;
     static ApiManager apiManager = ApiManager.getInstance();
 
+    private static void travelProject() throws InterruptedException, IOException {
+        List<Project> projects = apiManager.requestListOfProject();
+        while (true) {
+            util.clearConsole();
+            System.out.println("There is projects as below.");
+            for (int i = 0; i < projects.size(); i++) {
+                System.out.println(i + 1 + ")" + "Project Name: " + projects.get(i).Name + " | Created Date: " + projects.get(i).CreatedDate + " | Description: " + projects.get(i).Description);
+            }
+            System.out.println();
+            System.out.println("Please type command. Type 'help' to see the list of commands.");
+            System.out.print(">> ");
+            String input = reader.readLine();
+            if (input.equals("help")) {
+                util.projectsHelp();
+            } else if (input.contains("goto")) {
+                String[] split = input.split(" ");
+                int index = Integer.parseInt(split[1]) - 1;
+                util.gotoProject(projects.get(index));
+            } else if (input.equals("exit")) {
+                break;
+            }
+        }
+    }
+
     public static void makeProject() throws InterruptedException, IOException {
         System.out.print("Please enter the project name >> ");
         String projectName = reader.readLine();
@@ -28,7 +52,6 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         String input = null;
         boolean signedIn = false;
-
 
         util.clearConsole();
         System.out.print("Enter 'signin' or 'signup' >> ");
@@ -83,29 +106,6 @@ public class Main {
                 case "exit":
                     break label;
             }
-        }
-    }
-
-    private static void travelProject() throws InterruptedException, IOException {
-        List<Project> projects = apiManager.requestListOfProject();
-        while (true) {
-            util.clearConsole();
-            System.out.println("There is projects as below.");
-            for (int i = 0; i < projects.size(); i++) {
-                System.out.println(i + 1 + ")" + "Project Name: " + projects.get(i).Name + " | Created Date: " + projects.get(i).CreatedDate + " | Description: " + projects.get(i).Description);
-            }
-            System.out.println();
-            System.out.println("Please type command. Type 'help' to see the list of commands.");
-            System.out.print(">> ");
-            String input = reader.readLine();
-            if (input.equals("help")) {
-                util.projectsHelp();
-            } else if (input.contains("edit")) {
-                //util.projectEdit();
-            } else if (input.equals("exit")) {
-                break;
-            }
-
         }
     }
 }

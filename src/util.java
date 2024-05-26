@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public class util {
@@ -20,23 +21,6 @@ public class util {
         }
     }
 
-    public static void projectsHelp() {
-        util.clearConsole();
-        System.out.println("Available commands:");
-        System.out.println("1. 'exit' - Exit the project");
-        System.out.println("2. 'details [project index]' - Show the details of the project");
-        System.out.println("3. 'edit [project index]' - Edit the project");
-        while (true) {
-            System.out.print("Press 'enter' to go back.. ");
-            try {
-                System.in.read();
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public static void mainHelp() {
         util.clearConsole();
         System.out.println("Available commands:");
@@ -54,12 +38,61 @@ public class util {
         }
     }
 
-    public static void projectEdit(int index) throws IOException {
-        clearConsole();
-        System.out.print("Enter new project name >> ");
-        String name = Main.reader.readLine();
-        System.out.print("Enter new project description >> ");
-        String description = Main.reader.readLine();
+    public static void projectsHelp() {
+        util.clearConsole();
+        System.out.println("Available commands:");
+        System.out.println("1. 'exit' - Exit the directory");
+        System.out.println("2. 'goto [project index]' - Move to the project to see the issues");
+        while (true) {
+            System.out.print("Press 'enter' to go back.. ");
+            try {
+                System.in.read();
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    public static void issueHelp() {
+        util.clearConsole();
+        System.out.println("Available commands:");
+        System.out.println("1. 'exit' - Exit the project");
+        System.out.println("2. 'goto [issue index]' - Move to the issue");
+        System.out.println("3. 'create issue' - Create a new issue");
+        System.out.println("4. 'edit issue [issue index]' - Edit the issue");
+        while (true) {
+            System.out.print("Press 'enter' to go back.. ");
+            try {
+                System.in.read();
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void gotoProject(Project project) throws IOException, InterruptedException {
+        while (true) {
+            List<Issue> issues = apiManager.requestListOfIssue(project.Name);
+            clearConsole();
+            System.out.println("You are now in the '" + project.Name + "' project.");
+            System.out.println("There is issues as below.");
+            for (int i = 0; i < issues.size(); i++) {
+                System.out.println(i + 1 + ")" + "Issue Name: " + issues.get(i).title + " | Status: " + issues.get(i).status + " | Priority: " + issues.get(i).priority + " | Description: " + issues.get(i).description);
+            }
+            System.out.println("Please type command. Type 'help' to see the list of commands.");
+            System.out.print(">> ");
+            String input = Main.reader.readLine();
+            if (input.equals("help")) {
+                issueHelp();
+            } else if (input.equals("exit")) {
+                break;
+            } else if (input.startsWith("goto")) {
+                String[] split = input.split(" ");
+                int index = Integer.parseInt(split[1]) - 1;
+                //util.gotoIssue(project.Issues.get(index));
+            }
+        }
     }
 }

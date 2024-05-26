@@ -27,38 +27,38 @@ public class ApiManager {//singleton pattern
     // send the signin request
     // 로그인 확인 로직 안들어있음 로그인 된 경우에만 true 반환
     boolean requestSignin(User user) throws InterruptedException {
-        setupRequest();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:3000/User"))
-                .build();
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .join();
+//        setupRequest();
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .uri(URI.create("http://localhost:3000/User"))
+//                .build();
+//        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+//                .thenApply(HttpResponse::body)
+//                .join();
         return true;
     }
 
     // send the signup request
     // 로그인 확인 로직 안들어있음 로그인 된 경우에만 true 반환
     boolean requestSignup(User user) throws InterruptedException {
-        setupRequest();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:3000/User"))
-                .build();
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .join();
+//        setupRequest();
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .uri(URI.create("http://localhost:3000/User"))
+//                .build();
+//        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+//                .thenApply(HttpResponse::body)
+//                .join();
         return true;
     }
 
     boolean requestCreateProject(User user) throws InterruptedException {
-        setupRequest();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:3000/Project"))
-                //.POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .join();
+//        setupRequest();
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .uri(URI.create("http://localhost:3000/Project"))
+//                //.POST(HttpRequest.BodyPublishers.ofString(json))
+//                .build();
+//        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+//                .thenApply(HttpResponse::body)
+//                .join();
         return true;
     }
 
@@ -83,6 +83,13 @@ public class ApiManager {//singleton pattern
         return false;
     }
 
-    public void requestEditProject(String projectName) {
+    List<Issue> requestListOfIssue(String projectName) throws InterruptedException {
+        List<Issue> issues = new ArrayList<>();
+        Issue issue1 = new Issue("Issue1", "This is issue1", new ArrayList<>(), "Open", "High");
+        Issue issue2 = new Issue("Issue2", "This is issue2", new ArrayList<>(), "Open", "High");
+        issues.add(issue1);
+        issues.add(issue2);
+        return issues;
     }
+
 }
