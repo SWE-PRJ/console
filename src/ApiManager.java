@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -5,8 +6,11 @@ import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
-public class ApiManager {//singleton pattern
+public class ApiManager {
+    private String token;
+    private String baseUrl = "http://localhost:8080/";
     private static final ApiManager instance = new ApiManager();
 
     private ApiManager() {
@@ -26,15 +30,21 @@ public class ApiManager {//singleton pattern
 
     // send the signin request
     // 로그인 확인 로직 안들어있음 로그인 된 경우에만 true 반환
-    boolean requestSignin(User user) throws InterruptedException {
-//        setupRequest();
-//        HttpRequest request = HttpRequest.newBuilder()
-//                .uri(URI.create("http://localhost:3000/User"))
-//                .build();
-//        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-//                .thenApply(HttpResponse::body)
-//                .join();
-        return true;
+    boolean requestSignin(User user) throws InterruptedException, IOException {
+        //json 생성
+        setupRequest();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "login"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("{\"identifier\":\"" + user.getUsername() + "\",\"password\":\"" + user.getPassword() + "\"}" ))
+                .build();
+        HttpResponse<String> response= client.send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response);
+        token=response.body();
+        if(response.statusCode() == 200) {
+            return true;
+        }
+        return false;
     }
 
     // send the signup request
