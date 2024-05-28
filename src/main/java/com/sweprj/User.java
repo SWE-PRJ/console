@@ -1,0 +1,30 @@
+package com.sweprj;
+
+public class User {
+    private String username;
+    private String password;
+    private String role = "admin";
+
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+}
