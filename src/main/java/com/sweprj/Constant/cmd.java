@@ -1,4 +1,4 @@
-package com.sweprj;
+package com.sweprj.Constant;
 
 public enum cmd {
     CMD_MAKE_PROJECT,

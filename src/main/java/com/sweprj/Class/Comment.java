@@ -1,9 +1,9 @@
-package com.sweprj;
+package com.sweprj.Class;
 
 public class Comment {
     int IssueID;
     int userID;
-    String comment;
+    public String comment;
 
 
     public Comment(int issueID, int userID, String comment) {

@@ -1,15 +1,15 @@
-package com.sweprj;
+package com.sweprj.Class;
 
 import java.util.Date;
 import java.util.List;
 
 public class Project {
-    String Name;
-    Date CreatedDate;
-    String Description;
+    public String Name;
+    public Date CreatedDate;
+    public String Description;
     List<Issue> issues;
 
-    Project(String Name, Date CreatedDate, String Description) {
+    public Project(String Name, Date CreatedDate, String Description) {
         this.Name = Name;
         this.CreatedDate = CreatedDate;
         this.Description = Description;
