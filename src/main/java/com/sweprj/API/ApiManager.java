@@ -2,7 +2,6 @@ package com.sweprj.API;
 
 import com.sweprj.util;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -34,8 +33,7 @@ public class ApiManager {
                 .exchangeToMono(response -> {
                     if (response.statusCode().equals(HttpStatus.OK)) {
                         return response.bodyToMono(Map.class);
-                    }
-                    else {
+                    } else {
                         // Turn to error
                         return response.createError();
                     }
@@ -43,18 +41,33 @@ public class ApiManager {
     }
 
     //get request
-    public Mono<ClientResponse> get(String uri) {
+    public Mono<Map> get(String uri) {
         return webClient.get()
                 .uri(uri)
-                .exchangeToMono(Mono::just);
+                .exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.OK)) {
+                        return response.bodyToMono(Map.class);
+                    } else {
+                        // Turn to error
+                        return response.createError();
+                    }
+                });
     }
 
+
     //patch request
-    public Mono<ClientResponse> patch(String uri, Map<String, String> body) {
+    public Mono<Map> patch(String uri, Map<String, String> body) {
         return webClient.patch()
                 .uri(uri)
                 .bodyValue(body)
-                .exchangeToMono(Mono::just);
+                .exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.OK)) {
+                        return response.bodyToMono(Map.class);
+                    } else {
+                        // Turn to error
+                        return response.createError();
+                    }
+                });
     }
 
 
