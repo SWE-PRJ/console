@@ -17,6 +17,8 @@ import java.util.Map;
 
 import static com.sweprj.API.LoginAPI.requestRegister;
 import static com.sweprj.API.ProjectAPI.browseEntireProjects;
+import static com.sweprj.Constant.textColor.exit;
+import static com.sweprj.Constant.textColor.green;
 
 public class Main {
     static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -57,6 +59,7 @@ public class Main {
             util.clearConsole();
             System.out.println("You are now in the '" + project.Name + "' project.");
             System.out.println("There is issues as below.");
+            System.out.println();
             for (int i = 0; i < issues.size(); i++) {
                 System.out.println("[" + (i + 1) + "]" + "Issue Name: " + issues.get(i).title + " | Status: " + issues.get(i).status + " | Priority: " + issues.get(i).priority + " | Description: " + issues.get(i).description);
             }
@@ -90,10 +93,11 @@ public class Main {
         while (true) {
             util.clearConsole();
             System.out.println("There is projects as below.");
+            System.out.println();
             for (int i = 0; i < temp.size(); i++) {
                 if (!myProjects.contains(temp.get(i).get("id"))) continue;
                 projects.add(new Project((int) temp.get(i).get("id"), (String) temp.get(i).get("name")));
-                System.out.println("[" + (i + 1) + "]" + "Project Name: " + temp.get(i).get("name"));
+                System.out.println(green+"[" + (i + 1) + "] " +exit+ "Project Name: " + temp.get(i).get("name"));
             }
             System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
@@ -153,6 +157,7 @@ public class Main {
             util.clearConsole();
             System.out.println("Hello, " + user.getIdentifier() + "!");
             System.out.println("Welcome to Issue Management!");
+            System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             input = reader.readLine();
@@ -171,6 +176,8 @@ public class Main {
                     break;
                 case "exit":
                     break label;
+                default:
+                    util.wrondCommand();
             }
         }
     }
