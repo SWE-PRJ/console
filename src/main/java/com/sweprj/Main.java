@@ -81,12 +81,16 @@ public class Main {
     }
 
     private static void travelProject() throws InterruptedException, IOException {
-        List<Project> projects = ProjectAPI.requestListOfProject();
+        List<Integer> myProjects = ProjectAPI.requestListOfProject();
+        List<Project> projects;
         while (true) {
             util.clearConsole();
             System.out.println("There is projects as below.");
-            for (int i = 0; i < projects.size(); i++) {
-                System.out.println("[" + (i + 1) + "] " + "Project Name: " + projects.get(i).Name + " | Created Date: " + projects.get(i).CreatedDate + " | Description: " + projects.get(i).Description);
+//            for (int i = 0; i < projects.size(); i++) {
+//                System.out.println("[" + (i + 1) + "] " + "Project Name: " + projects.get(i).Name + " | Created Date: " + projects.get(i).CreatedDate + " | Description: " + projects.get(i).Description);
+//            }
+            for(int i = 0; i < myProjects.size(); i++) {
+                System.out.println("[" + (i + 1) + "] " + "Project ID: " + myProjects.get(i));
             }
             System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
@@ -99,7 +103,7 @@ public class Main {
             } else if (input.contains("goto")) {
                 String[] split = input.split(" ");
                 int index = Integer.parseInt(split[1]) - 1;
-                travelIssue(projects.get(index));
+                //travelIssue(projects.get(index));
             } else if (input.equals("exit")) {
                 break;
             } else {
@@ -144,6 +148,7 @@ public class Main {
         label:
         while (true) {
             util.clearConsole();
+            System.out.println("Hello, " + user.getIdentifier() + "!");
             System.out.println("Welcome to Issue Management!");
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
@@ -155,10 +160,10 @@ public class Main {
                 case "register user":
                     registerUser();
                     break;
-                case "make project":
+                case "make project"://미완
                     makeProject();
                     break;
-                case "travel project":
+                case "travel project"://개발중
                     travelProject();
                     break;
                 case "exit":
@@ -169,13 +174,15 @@ public class Main {
 
     private static void registerUser() throws IOException, InterruptedException {
         String username, identifier, password, role;
+        util.clearConsole();
+        System.out.println("[Register a new user]");
         System.out.print("Please enter the username >> ");
         username = reader.readLine();
         System.out.print("Please enter the identifier >> ");
         identifier = reader.readLine();
         System.out.print("Please enter the password >> ");
         password = reader.readLine();
-        System.out.print("Please enter the role >> ");
+        System.out.print("Please enter the role('admin', 'pl', 'dev', 'tester') >> ");
         role = reader.readLine();
         User newUser = new User(username, password, identifier);
         requestRegister(newUser, role, user.getIdentifier());

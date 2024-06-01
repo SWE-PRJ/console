@@ -22,7 +22,7 @@ public class LoginAPI {
         }
         Map<String, String> obj = new HashMap<String, String>();
         for (Object obj_Entry : response.entrySet()) {
-            Map.Entry entry = (Map.Entry) obj_Entry; // This will Work Fine all Time.
+            Map.Entry entry = (Map.Entry) obj_Entry;
             obj.put(entry.getKey().toString(), entry.getValue().toString());
         }
         apiManager.setToken(obj.get("token"));
@@ -30,7 +30,7 @@ public class LoginAPI {
     }
 
     // send the register request
-    public static boolean requestRegister(User user, String role, String adminIdentifier) throws InterruptedException {
+    public static void requestRegister(User user, String role, String adminIdentifier) throws InterruptedException {
         Map<String, String> body = Map.of(
                 "name", user.getUsername(),
                 "identifier", user.getIdentifier(),
@@ -42,8 +42,6 @@ public class LoginAPI {
                     .block();
         } catch (Exception e) {
             apiManager.handleException();
-            return false;
         }
-        return true;
     }
 }

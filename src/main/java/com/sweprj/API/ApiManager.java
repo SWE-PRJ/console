@@ -8,7 +8,6 @@ import org.springframework.web.reactive.function.client.ExchangeFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.net.http.HttpClient;
 import java.util.Map;
 
 public class ApiManager {
@@ -20,10 +19,11 @@ public class ApiManager {
             .baseUrl(baseUrl)
             .filter(this::addAuthorizationHeader)
             .build();
+
     public void setToken(String token) {
-        System.out.println("DEBUG setToken: " + token);
         this.token = token;
     }
+
     private Mono<ClientResponse> addAuthorizationHeader(ClientRequest request, ExchangeFunction next) {
         if (token == null) {
             return next.exchange(request);
@@ -31,7 +31,6 @@ public class ApiManager {
         ClientRequest authorizedRequest = ClientRequest.from(request)
                 .header("Authorization", "Bearer " + token)
                 .build();
-        System.out.println("DEBUG: " + authorizedRequest.headers().toString());
         return next.exchange(authorizedRequest);
     }
 
@@ -100,7 +99,6 @@ public class ApiManager {
 
     void handleException() {
         System.out.println("An error occurred. Please try again.");
-        System.out.println("Press enter to continue...");
         util.waitForEnter();
     }
 
