@@ -61,6 +61,7 @@ public class Main {
             for (int i = 0; i < issues.size(); i++) {
                 System.out.println(green + "[" + (i + 1) + "]" + exit + "Issue Name: " + issues.get(i).title + " | Status: " + issues.get(i).state + " | Priority: " + issues.get(i).priority + " | Description: " + issues.get(i).description);
             }
+            System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             String input = Main.reader.readLine();
@@ -95,7 +96,7 @@ public class Main {
             for (int i = 0; i < temp.size(); i++) {
                 if (!myProjects.contains(temp.get(i).get("id"))) continue;
                 projects.add(new Project((int) temp.get(i).get("id"), (String) temp.get(i).get("name")));
-                System.out.println(green + "[" + (i + 1) + "] " + exit + "Project Name: " + temp.get(i).get("name"));
+                System.out.println(green + "[" + temp.get(i).get("id") + "] " + exit + "Project Name: " + temp.get(i).get("name"));
             }
             System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
@@ -107,8 +108,14 @@ public class Main {
                 util.projectsHelp();
             } else if (input.contains("goto")) {
                 String[] split = input.split(" ");
-                int index = Integer.parseInt(split[1]) - 1;
-                travelIssue(projects.get(index));
+                int index = Integer.parseInt(split[1]);
+                projects.stream().filter(project -> project.getId() == index).findFirst().ifPresent(project -> {
+                    try {
+                        travelIssue(project);
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
             } else if (input.equals("exit")) {
                 break;
             } else {
