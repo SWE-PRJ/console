@@ -1,12 +1,13 @@
-import java.util.ArrayList;
+package com.sweprj.Class;
+
 import java.util.List;
 
 public class Issue {
-    String title;
-    String description;
-    List<Comment> comments;
-    String status;
-    String priority;
+    public String title;
+    public String description;
+    public List<Comment> comments;
+    public String status;
+    public String priority;
 
     public Issue(String title, String description, List<Comment> comments, String status, String priority) {
         this.title = title;

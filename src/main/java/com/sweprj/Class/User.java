@@ -1,3 +1,5 @@
+package com.sweprj.Class;
+
 public class User {
     private String username;
     private String password;

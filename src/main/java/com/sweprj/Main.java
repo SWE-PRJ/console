@@ -1,3 +1,13 @@
+package com.sweprj;
+
+import com.sweprj.API.ApiManager;
+import com.sweprj.API.LoginAPI;
+import com.sweprj.API.ProjectAPI;
+import com.sweprj.Class.Issue;
+import com.sweprj.Class.Project;
+import com.sweprj.Class.User;
+import com.sweprj.API.IssueAPI;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -38,7 +48,7 @@ public class Main {
 
     public static void travelIssue(Project project) throws IOException, InterruptedException {
         while (true) {
-            List<Issue> issues = apiManager.requestListOfIssue(project.Name);
+            List<Issue> issues = IssueAPI.requestListOfIssue(project.Name);
             util.clearConsole();
             System.out.println("You are now in the '" + project.Name + "' project.");
             System.out.println("There is issues as below.");
@@ -70,7 +80,7 @@ public class Main {
     }
 
     private static void travelProject() throws InterruptedException, IOException {
-        List<Project> projects = apiManager.requestListOfProject();
+        List<Project> projects = ProjectAPI.requestListOfProject();
         while (true) {
             util.clearConsole();
             System.out.println("There is projects as below.");
@@ -108,10 +118,10 @@ public class Main {
         for (int i = 0; i < member; i++) {
             System.out.print("Please enter the member name >> ");
             String memberName = reader.readLine();
-            apiManager.requestInviteMember(memberName);
+            ProjectAPI.requestInviteMember(memberName);
         }
         System.out.println("Creating a new project...");
-        apiManager.requestCreateProject(user);
+        ProjectAPI.requestCreateProject(user);
         System.out.println("Project created successfully.");
     }
 
@@ -141,14 +151,14 @@ public class Main {
                 System.out.print("Enter password >> ");
                 String password = reader.readLine();
                 user = new User(username, password);
-                signedIn = apiManager.requestSignin(user);
+                signedIn = LoginAPI.requestSignin(user);
             } else {
                 System.out.print("Enter username >> ");
                 String username = reader.readLine();
                 System.out.print("Enter password >> ");
                 String password = reader.readLine();
                 user = new User(username, password);
-                signedIn = apiManager.requestSignup(user);
+                signedIn = LoginAPI.requestSignup(user);
             }
         }
         //서비스 로직
