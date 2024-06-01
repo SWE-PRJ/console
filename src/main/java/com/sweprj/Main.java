@@ -26,13 +26,13 @@ public class Main {
     public static void showDetailIssue(Issue issue) throws IOException, InterruptedException {
         while (true) {
             util.clearConsole();
-            System.out.println("Issue Name: " + issue.title);
-            System.out.println("Description: " + issue.description);
-            System.out.println("Status: " + issue.state);
-            System.out.println("Priority: " + issue.priority);
+            System.out.println("Issue Name: " + issue.getTitle());
+            System.out.println("Description: " + issue.getDescription());
+            System.out.println("Status: " + issue.getState());
+            System.out.println("Priority: " + issue.getPriority());
             System.out.println("Comments: ");
-            for (int i = 0; i < issue.comments.size(); i++) {
-                System.out.println("[" + (i + 1) + "] " + issue.comments.get(i).comment);
+            for (int i = 0; i < issue.getComments().size(); i++) {
+                System.out.println("  [" + issue.getComments().get(i).getId() + "] " + issue.getComments().get(i).getContent());
             }
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
@@ -59,7 +59,7 @@ public class Main {
             System.out.println("This project has following issues.");
             System.out.println();
             for (int i = 0; i < issues.size(); i++) {
-                System.out.println(green + "[" + (i + 1) + "]" + exit + "Issue Name: " + issues.get(i).title + " | Status: " + issues.get(i).state + " | Priority: " + issues.get(i).priority + " | Description: " + issues.get(i).description);
+                System.out.println(green + "[" + issues.get(i).getId() + "]" + exit + "Issue Name: " + issues.get(i).getTitle() + " | Status: " + issues.get(i).getTitle() + " | Priority: " + issues.get(i).getPriority() + " | Description: " + issues.get(i).getDescription());
             }
             System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
@@ -71,53 +71,20 @@ public class Main {
                 util.issueHelp();
             } else if (input.equals("exit")) {
                 break;
-            } else if (input.startsWith("goto")) {
-                String[] split = input.split(" ");
-                int index = Integer.parseInt(split[1]) - 1;
-                showDetailIssue(issues.get(index));
-            } else if (input.equals("create issue")) {
-
-            } else if (input.startsWith("edit issue")) {
-
-            } else {
-                util.wrondCommand();
-            }
-        }
-    }
-
-    private static void travelProject() throws InterruptedException, IOException {
-        List<Integer> myProjects = ProjectAPI.requestListOfProject();
-        List<Project> projects = new ArrayList<>();
-        List<Map<String, Object>> temp = browseEntireProjects();
-        while (true) {
-            util.clearConsole();
-            System.out.println("There is projects as below.");
-            System.out.println();
-            for (int i = 0; i < temp.size(); i++) {
-                if (!myProjects.contains(temp.get(i).get("id"))) continue;
-                projects.add(new Project((int) temp.get(i).get("id"), (String) temp.get(i).get("name")));
-                System.out.println(green + "[" + temp.get(i).get("id") + "] " + exit + "Project Name: " + temp.get(i).get("name"));
-            }
-            System.out.println();
-            System.out.println("Please type command. Type 'help' to see the list of commands.");
-            System.out.print(">> ");
-            String input = reader.readLine();
-            if (input.isEmpty()) {
-                continue;
-            } else if (input.equals("help")) {
-                util.projectsHelp();
-            } else if (input.contains("goto")) {
+            } else if (input.startsWith("goto")) {//개발중
                 String[] split = input.split(" ");
                 int index = Integer.parseInt(split[1]);
-                projects.stream().filter(project -> project.getId() == index).findFirst().ifPresent(project -> {
+                issues.stream().filter(issue -> issue.getId() == index).findFirst().ifPresent(issue -> {
                     try {
-                        travelIssue(project);
+                        showDetailIssue(issue);
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
                 });
-            } else if (input.equals("exit")) {
-                break;
+            } else if (input.equals("create issue")) {
+
+            } else if (input.startsWith("edit issue")) {
+
             } else {
                 util.wrondCommand();
             }
@@ -153,7 +120,9 @@ public class Main {
             String identifier = reader.readLine();
             System.out.print("Enter password >> ");
             String password = reader.readLine();
-            user = new User(identifier, password);
+            user = new User();
+            user.setIdentifier(identifier);
+            user.setPassword(password);
             signedIn = LoginAPI.requestSignin(user);
         }
         //서비스 로직
@@ -199,7 +168,52 @@ public class Main {
         password = reader.readLine();
         System.out.print("Please enter the role('admin', 'pl', 'dev', 'tester') >> ");
         role = reader.readLine();
-        User newUser = new User(username, password, identifier);
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setIdentifier(identifier);
+        newUser.setPassword(password);
         requestRegister(newUser, role, user.getIdentifier());
+    }
+
+    private static void travelProject() throws InterruptedException, IOException {
+        List<Integer> myProjects = ProjectAPI.requestListOfProject();
+        List<Project> projects = new ArrayList<>();
+        List<Map<String, Object>> temp = browseEntireProjects();
+        while (true) {
+            util.clearConsole();
+            System.out.println("There is projects as below.");
+            System.out.println();
+            for (int i = 0; i < temp.size(); i++) {
+                if (!myProjects.contains(temp.get(i).get("id"))) continue;
+                Project project = new Project();
+                project.setId((int) temp.get(i).get("id"));
+                project.setName((String) temp.get(i).get("name"));
+                projects.add(project);
+                System.out.println(green + "[" + temp.get(i).get("id") + "] " + exit + "Project Name: " + temp.get(i).get("name"));
+            }
+            System.out.println();
+            System.out.println("Please type command. Type 'help' to see the list of commands.");
+            System.out.print(">> ");
+            String input = reader.readLine();
+            if (input.isEmpty()) {
+                continue;
+            } else if (input.equals("help")) {
+                util.projectsHelp();
+            } else if (input.contains("goto")) {
+                String[] split = input.split(" ");
+                int index = Integer.parseInt(split[1]);
+                projects.stream().filter(project -> project.getId() == index).findFirst().ifPresent(project -> {
+                    try {
+                        travelIssue(project);
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
+            } else if (input.equals("exit")) {
+                break;
+            } else {
+                util.wrondCommand();
+            }
+        }
     }
 }

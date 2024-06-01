@@ -1,14 +1,10 @@
 package com.sweprj.Class;
 
+import lombok.Data;
+
+@Data
 public class Comment {
-    int IssueID;
-    int userID;
-    public String comment;
-
-
-    public Comment(int issueID, int userID, String comment) {
-        IssueID = issueID;
-        this.userID = userID;
-        this.comment = comment;
-    }
+    private int issueId;
+    private int id;
+    private String content;
 }

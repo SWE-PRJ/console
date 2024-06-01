@@ -2,14 +2,15 @@ package com.sweprj.Class;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class Issue {
-    public String title;
-    public String description;
-    public List<Comment> comments;
-    public String state;
-    public String priority;
-    public int id;
+    private String title;
+    private String description;
+    private List<Comment> comments = new ArrayList<>();
+    private String state;
+    private String priority;
+    private int id;
 }
