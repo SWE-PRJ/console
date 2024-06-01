@@ -1,17 +1,19 @@
 package com.sweprj;
 
 import com.sweprj.API.ApiManager;
+import com.sweprj.API.IssueAPI;
 import com.sweprj.API.LoginAPI;
 import com.sweprj.API.ProjectAPI;
 import com.sweprj.Class.Issue;
 import com.sweprj.Class.Project;
 import com.sweprj.Class.User;
-import com.sweprj.API.IssueAPI;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
+
+import static com.sweprj.API.LoginAPI.requestRegister;
 
 public class Main {
     static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -58,10 +60,9 @@ public class Main {
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             String input = Main.reader.readLine();
-            if(input.isEmpty()){
+            if (input.isEmpty()) {
                 continue;
-            }
-            else if (input.equals("help")) {
+            } else if (input.equals("help")) {
                 util.issueHelp();
             } else if (input.equals("exit")) {
                 break;
@@ -91,10 +92,9 @@ public class Main {
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             String input = reader.readLine();
-            if(input.isEmpty()){
+            if (input.isEmpty()) {
                 continue;
-            }
-            else if (input.equals("help")) {
+            } else if (input.equals("help")) {
                 util.projectsHelp();
             } else if (input.contains("goto")) {
                 String[] split = input.split(" ");
@@ -129,37 +129,16 @@ public class Main {
         String input = null;
         boolean signedIn = false;
 
-        util.clearConsole();
-        System.out.print("Enter 'signin' or 'signup' >> ");
-        input = reader.readLine();
-        while (!input.equals("signin") && !input.equals("signup")) {
-            util.clearConsole();
-            System.out.println("Wrong input. Try again.");
-            System.out.print("Enter 'signin' or 'signup' >> ");
-            input = reader.readLine();
-        }
-        //로그인/회원가입 로직
+        //로그인 로직
         while (true) {
             util.clearConsole();
-            if (signedIn) {
-                System.out.println("Signed in...");
-                break;
-            }
-            if (input.equals("signin")) {
-                System.out.print("Enter username >> ");
-                String username = reader.readLine();
-                System.out.print("Enter password >> ");
-                String password = reader.readLine();
-                user = new User(username, password);
-                signedIn = LoginAPI.requestSignin(user);
-            } else {
-                System.out.print("Enter username >> ");
-                String username = reader.readLine();
-                System.out.print("Enter password >> ");
-                String password = reader.readLine();
-                user = new User(username, password);
-                signedIn = LoginAPI.requestSignup(user);
-            }
+            if (signedIn) break;
+            System.out.print("Enter username >> ");
+            String identifier = reader.readLine();
+            System.out.print("Enter password >> ");
+            String password = reader.readLine();
+            user = new User(identifier, password);
+            signedIn = LoginAPI.requestSignin(user);
         }
         //서비스 로직
         label:
@@ -173,6 +152,9 @@ public class Main {
                 case "help":
                     util.mainHelp();
                     break;
+                case "register user":
+                    registerUser();
+                    break;
                 case "make project":
                     makeProject();
                     break;
@@ -183,5 +165,19 @@ public class Main {
                     break label;
             }
         }
+    }
+
+    private static void registerUser() throws IOException, InterruptedException {
+        String username, identifier, password, role;
+        System.out.print("Please enter the username >> ");
+        username = reader.readLine();
+        System.out.print("Please enter the identifier >> ");
+        identifier = reader.readLine();
+        System.out.print("Please enter the password >> ");
+        password = reader.readLine();
+        System.out.print("Please enter the role >> ");
+        role = reader.readLine();
+        User newUser = new User(username, password, identifier);
+        requestRegister(newUser, role, user.getIdentifier());
     }
 }

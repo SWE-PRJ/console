@@ -8,9 +8,10 @@ import java.util.Map;
 public class LoginAPI {
     static ApiManager apiManager = ApiManager.getInstance();
 
+    // send the signin request
     public static boolean requestSignin(User user) {
         Map<String, String> body = Map.of(
-                "identifier", user.getUsername(),
+                "identifier", user.getIdentifier(),
                 "password", user.getPassword());
         Map response;
         try {
@@ -24,12 +25,25 @@ public class LoginAPI {
             Map.Entry entry = (Map.Entry) obj_Entry; // This will Work Fine all Time.
             obj.put(entry.getKey().toString(), entry.getValue().toString());
         }
-        apiManager.token = obj.get("token");
+        apiManager.setToken(obj.get("token"));
         return true;
     }
 
-    // send the signup request
-    public static boolean requestSignup(User user) throws InterruptedException {
+    // send the register request
+    public static boolean requestRegister(User user, String role, String adminIdentifier) throws InterruptedException {
+        Map<String, String> body = Map.of(
+                "name", user.getUsername(),
+                "identifier", user.getIdentifier(),
+                "password", user.getPassword());
+        Map response;
+        try {
+            response = apiManager
+                    .post(String.format("/admin/register?role=%s&adminIdentifier=%s", role, adminIdentifier), body)
+                    .block();
+        } catch (Exception e) {
+            apiManager.handleException();
+            return false;
+        }
         return true;
     }
 }

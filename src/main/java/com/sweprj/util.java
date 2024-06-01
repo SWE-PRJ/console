@@ -40,8 +40,9 @@ public class util {
         util.clearConsole();
         System.out.println("Available commands:");
         System.out.println("1. 'make project' - Create a new project(Admin only)");
-        System.out.println("2. 'travel project' - Move to a project");
-        System.out.println("3. 'exit' - Exit the program");
+        System.out.println("2. 'register user' - Register a new user(Admin only)");
+        System.out.println("3. 'travel project' - Move to a project");
+        System.out.println("4. 'exit' - Exit the program");
         waitForEnter();
     }
 

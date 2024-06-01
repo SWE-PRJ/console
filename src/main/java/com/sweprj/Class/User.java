@@ -1,14 +1,20 @@
 package com.sweprj.Class;
 
 public class User {
-    private String username;
+    private String identifier;
     private String password;
+    private String username;
     private String role = "admin";
 
 
-    public User(String username, String password) {
+    public User(String identifier, String password) {
+        this.identifier = identifier;
+        this.password = password;
+    }
+    public User(String username, String password, String identifier) {
         this.username = username;
         this.password = password;
+        this.identifier = identifier;
     }
 
     public String getUsername() {
@@ -27,4 +33,7 @@ public class User {
         this.role = role;
     }
 
+    public String getIdentifier() {
+        return identifier;
+    }
 }

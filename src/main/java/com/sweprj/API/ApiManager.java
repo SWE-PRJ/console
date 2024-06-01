@@ -2,6 +2,9 @@ package com.sweprj.API;
 
 import com.sweprj.util;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.ExchangeFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -9,14 +12,28 @@ import java.net.http.HttpClient;
 import java.util.Map;
 
 public class ApiManager {
-    public String token;
-    private final String baseUrl = "http://localhost:8080/";
+    private String token;
+    private final String baseUrl = "http://localhost:8080";
     private static final com.sweprj.API.ApiManager instance = new com.sweprj.API.ApiManager();
     final WebClient webClient = WebClient.
-            builder().
-            baseUrl(baseUrl).
-            build();
-    HttpClient client = HttpClient.newHttpClient();
+            builder()
+            .baseUrl(baseUrl)
+            .filter(this::addAuthorizationHeader)
+            .build();
+    public void setToken(String token) {
+        System.out.println("DEBUG setToken: " + token);
+        this.token = token;
+    }
+    private Mono<ClientResponse> addAuthorizationHeader(ClientRequest request, ExchangeFunction next) {
+        if (token == null) {
+            return next.exchange(request);
+        }
+        ClientRequest authorizedRequest = ClientRequest.from(request)
+                .header("Authorization", "Bearer " + token)
+                .build();
+        System.out.println("DEBUG: " + authorizedRequest.headers().toString());
+        return next.exchange(authorizedRequest);
+    }
 
     private ApiManager() {
     }
@@ -31,7 +48,7 @@ public class ApiManager {
                 .uri(uri)
                 .bodyValue(body)
                 .exchangeToMono(response -> {
-                    if (response.statusCode().equals(HttpStatus.OK)) {
+                    if (response.statusCode().is2xxSuccessful()) {
                         return response.bodyToMono(Map.class);
                     } else {
                         // Turn to error
@@ -53,7 +70,6 @@ public class ApiManager {
                     }
                 });
     }
-
 
     //patch request
     public Mono<Map> patch(String uri, Map<String, String> body) {
