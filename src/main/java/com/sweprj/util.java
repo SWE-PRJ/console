@@ -11,7 +11,7 @@ import static com.sweprj.Constant.textColor.red;
 public class util {
     static ApiManager apiManager = ApiManager.getInstance();
 
-    public static void waitForEnter(){
+    public static void waitForEnter() {
         System.out.print("Press 'enter' to continue..");
         try {
             System.in.read();
@@ -19,6 +19,7 @@ public class util {
             e.printStackTrace();
         }
     }
+
     public static void clearConsole() {
         try {
             ProcessBuilder processBuilder;
@@ -34,9 +35,10 @@ public class util {
             e.printStackTrace();
         }
     }
+
     public static void wrondCommand() {
         System.out.println();
-        System.out.println(red+"Wrong command. Try again."+exit);
+        System.out.println(red + "Wrong command. Try again." + exit);
         waitForEnter();
     }
 
@@ -56,8 +58,8 @@ public class util {
         util.clearConsole();
         System.out.println("Available commands:");
         System.out.println();
-        System.out.println("1. 'exit' - Exit the directory");
-        System.out.println("2. 'goto [project id]' - Move to the project to see the issues");
+        System.out.println("1. 'goto [project id]' - Move to the project to see the issues");
+        System.out.println("2. 'exit' - Exit the directory");
         System.out.println();
         waitForEnter();
     }
@@ -66,10 +68,10 @@ public class util {
         util.clearConsole();
         System.out.println("Available commands:");
         System.out.println();
-        System.out.println("1. 'exit' - Exit the project");
-        System.out.println("2. 'goto [issue index]' - Move to the issue");
+        System.out.println("1. 'goto [issue index]' - Move to the issue");
+        System.out.println("2. 'edit issue [issue index]' - Edit the issue");
         System.out.println("3. 'create issue' - Create a new issue");
-        System.out.println("4. 'edit issue [issue index]' - Edit the issue");
+        System.out.println("4. 'exit' - Exit the project");
         System.out.println();
         waitForEnter();
     }

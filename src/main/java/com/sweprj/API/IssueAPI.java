@@ -15,12 +15,12 @@ public class IssueAPI {
         List<Issue> issues = new ArrayList<>();
         Map<String, Object> response;
         try {
-            response = (Map<String,Object>) apiManager.get("/api/projects/" + projectId + "/issues", false).block();
+            response = (Map<String, Object>) apiManager.get("/api/projects/" + projectId + "/issues", false).block();
         } catch (Exception e) {
             apiManager.handleException();
             throw new InterruptedException();
         }
-        ((List<Map<String,Object>>)(response.get("issues"))).forEach(issue -> {
+        ((List<Map<String, Object>>) (response.get("issues"))).forEach(issue -> {
             Map<String, Object> issueMap = (Map<String, Object>) issue;
             Issue issueObj = new Issue();
             issueObj.setId((int) issueMap.get("id"));
@@ -28,7 +28,14 @@ public class IssueAPI {
             issueObj.setDescription((String) issueMap.get("description"));
             issueObj.setState((String) issueMap.get("state"));
             issueObj.setPriority((String) issueMap.get("priority"));
-            issueObj.setComments((List<Comment>) issueMap.get("comments"));
+            ((List<Map<String, Object>>) (issueMap.get("comments"))).forEach(comment -> {
+                Map<String, Object> commentMap = (Map<String, Object>) comment;
+                Comment commentObj = new Comment();
+                commentObj.setId((int) commentMap.get("id"));
+                commentObj.setIssueId((int) commentMap.get("issueId"));
+                commentObj.setContent((String) commentMap.get("content"));
+                issueObj.getComments().add(commentObj);
+            });
             issues.add(issueObj);
         });
         return issues;
