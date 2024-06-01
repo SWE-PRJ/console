@@ -2,7 +2,9 @@ package com.sweprj.Class;
 
 import java.util.Date;
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class Project {
     public String Name;
     int id;
@@ -12,4 +14,5 @@ public class Project {
         this.id = id;
         this.Name = Name;
     }
+
 }

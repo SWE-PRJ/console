@@ -1,19 +1,15 @@
 package com.sweprj.Class;
 
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 public class Issue {
     public String title;
     public String description;
     public List<Comment> comments;
-    public String status;
+    public String state;
     public String priority;
-
-    public Issue(String title, String description, List<Comment> comments, String status, String priority) {
-        this.title = title;
-        this.description = description;
-        this.comments = comments;
-        this.status = status;
-        this.priority = priority;
-    }
+    public int id;
 }
