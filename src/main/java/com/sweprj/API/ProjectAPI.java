@@ -2,8 +2,6 @@ package com.sweprj.API;
 
 import com.sweprj.Class.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +20,7 @@ public class ProjectAPI {
         List<Integer> projects;
         Map response;
         try {
-            response = apiManager.get("/me").block();
+            response = (Map) apiManager.get("/me", false).block();
         } catch (Exception e) {
             apiManager.handleException();
             throw new InterruptedException();
@@ -31,15 +29,14 @@ public class ProjectAPI {
         return projects;
     }
 
-//    public static Map<String,String> browseEntireProjects() throws InterruptedException {
-//        Map response;
-//        try {
-//            response = apiManager.get("/projects").block();
-//        } catch (Exception e) {
-//            apiManager.handleException();
-//            throw new InterruptedException();
-//        }
-//
-//        return response;
-//    }
+    public static List<Map<String,Object>> browseEntireProjects() throws InterruptedException {
+        List<Map<String,Object>> response;
+        try {
+            response = (List<Map<String, Object>>) apiManager.get("/api/projects", true).block();
+        } catch (Exception e) {
+            apiManager.handleException();
+            throw new InterruptedException();
+        }
+        return response;
+    }
 }

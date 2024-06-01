@@ -11,9 +11,12 @@ import com.sweprj.Class.User;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.sweprj.API.LoginAPI.requestRegister;
+import static com.sweprj.API.ProjectAPI.browseEntireProjects;
 
 public class Main {
     static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -82,15 +85,15 @@ public class Main {
 
     private static void travelProject() throws InterruptedException, IOException {
         List<Integer> myProjects = ProjectAPI.requestListOfProject();
-        List<Project> projects;
+        List<Project> projects = new ArrayList<>();
+        List<Map<String, Object>> temp = browseEntireProjects();
         while (true) {
             util.clearConsole();
             System.out.println("There is projects as below.");
-//            for (int i = 0; i < projects.size(); i++) {
-//                System.out.println("[" + (i + 1) + "] " + "Project Name: " + projects.get(i).Name + " | Created Date: " + projects.get(i).CreatedDate + " | Description: " + projects.get(i).Description);
-//            }
-            for(int i = 0; i < myProjects.size(); i++) {
-                System.out.println("[" + (i + 1) + "] " + "Project ID: " + myProjects.get(i));
+            for (int i = 0; i < temp.size(); i++) {
+                if (!myProjects.contains(temp.get(i).get("id"))) continue;
+                projects.add(new Project((int) temp.get(i).get("id"), (String) temp.get(i).get("name")));
+                System.out.println("[" + (i + 1) + "]" + "Project Name: " + temp.get(i).get("name"));
             }
             System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");

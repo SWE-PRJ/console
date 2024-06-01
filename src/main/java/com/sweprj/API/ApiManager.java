@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.ExchangeFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
 import java.util.Map;
 
 public class ApiManager {
@@ -57,12 +58,12 @@ public class ApiManager {
     }
 
     //get request
-    public Mono<Map> get(String uri) {
+    public Mono<?> get(String uri,boolean isList) {
         return webClient.get()
                 .uri(uri)
                 .exchangeToMono(response -> {
                     if (response.statusCode().equals(HttpStatus.OK)) {
-                        return response.bodyToMono(Map.class);
+                        return response.bodyToMono(isList ? List.class :Map.class);
                     } else {
                         // Turn to error
                         return response.createError();

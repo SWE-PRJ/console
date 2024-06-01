@@ -5,13 +5,11 @@ import java.util.List;
 
 public class Project {
     public String Name;
-    public Date CreatedDate;
-    public String Description;
+    int id;
     List<Issue> issues;
 
-    public Project(String Name, Date CreatedDate, String Description) {
+    public Project(int id,String Name) {
+        this.id = id;
         this.Name = Name;
-        this.CreatedDate = CreatedDate;
-        this.Description = Description;
     }
 }

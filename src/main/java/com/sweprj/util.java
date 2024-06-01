@@ -50,7 +50,7 @@ public class util {
         util.clearConsole();
         System.out.println("Available commands:");
         System.out.println("1. 'exit' - Exit the directory");
-        System.out.println("2. 'goto [project index]' - Move to the project to see the issues");
+        System.out.println("2. 'goto [project id]' - Move to the project to see the issues");
         waitForEnter();
     }
 
