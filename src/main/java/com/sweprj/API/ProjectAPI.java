@@ -1,13 +1,13 @@
 package com.sweprj.API;
 
-import com.sweprj.Class.Project;
 import com.sweprj.Class.User;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class ProjectAPI {
+    static ApiManager apiManager = ApiManager.getInstance();
+
     public static boolean requestCreateProject(User user) throws InterruptedException {
         return true;
     }
@@ -16,12 +16,27 @@ public class ProjectAPI {
         return false;
     }
 
-    public static List<Project> requestListOfProject() throws InterruptedException {
-        List<Project> projects = new ArrayList<>();
-        Project project1 = new Project("Project1", new Date(), "This is project1");
-        Project project2 = new Project("Project2", new Date(), "This is project2");
-        projects.add(project1);
-        projects.add(project2);
+    public static List<Integer> requestListOfProject() throws InterruptedException {
+        List<Integer> projects;
+        Map response;
+        try {
+            response = (Map) apiManager.get("/me", false).block();
+        } catch (Exception e) {
+            apiManager.handleException();
+            throw new InterruptedException();
+        }
+        projects = (List<Integer>) response.get("projects");
         return projects;
+    }
+
+    public static List<Map<String,Object>> browseEntireProjects() throws InterruptedException {
+        List<Map<String,Object>> response;
+        try {
+            response = (List<Map<String, Object>>) apiManager.get("/api/projects", true).block();
+        } catch (Exception e) {
+            apiManager.handleException();
+            throw new InterruptedException();
+        }
+        return response;
     }
 }

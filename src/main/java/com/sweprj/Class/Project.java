@@ -2,16 +2,17 @@ package com.sweprj.Class;
 
 import java.util.Date;
 import java.util.List;
+import lombok.Getter;
 
+@Getter
 public class Project {
     public String Name;
-    public Date CreatedDate;
-    public String Description;
+    int id;
     List<Issue> issues;
 
-    public Project(String Name, Date CreatedDate, String Description) {
+    public Project(int id,String Name) {
+        this.id = id;
         this.Name = Name;
-        this.CreatedDate = CreatedDate;
-        this.Description = Description;
     }
+
 }

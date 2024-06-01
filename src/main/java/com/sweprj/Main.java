@@ -1,29 +1,34 @@
 package com.sweprj;
 
-import com.sweprj.API.ApiManager;
+import com.sweprj.API.IssueAPI;
 import com.sweprj.API.LoginAPI;
 import com.sweprj.API.ProjectAPI;
 import com.sweprj.Class.Issue;
 import com.sweprj.Class.Project;
 import com.sweprj.Class.User;
-import com.sweprj.API.IssueAPI;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import static com.sweprj.API.LoginAPI.requestRegister;
+import static com.sweprj.API.ProjectAPI.browseEntireProjects;
+import static com.sweprj.Constant.textColor.exit;
+import static com.sweprj.Constant.textColor.green;
 
 public class Main {
     static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     static User user = null;
-    static ApiManager apiManager = ApiManager.getInstance();
 
     public static void showDetailIssue(Issue issue) throws IOException, InterruptedException {
         while (true) {
             util.clearConsole();
             System.out.println("Issue Name: " + issue.title);
             System.out.println("Description: " + issue.description);
-            System.out.println("Status: " + issue.status);
+            System.out.println("Status: " + issue.state);
             System.out.println("Priority: " + issue.priority);
             System.out.println("Comments: ");
             for (int i = 0; i < issue.comments.size(); i++) {
@@ -48,20 +53,21 @@ public class Main {
 
     public static void travelIssue(Project project) throws IOException, InterruptedException {
         while (true) {
-            List<Issue> issues = IssueAPI.requestListOfIssue(project.Name);
+            List<Issue> issues = IssueAPI.requestListOfIssue(project.getId());
             util.clearConsole();
             System.out.println("You are now in the '" + project.Name + "' project.");
-            System.out.println("There is issues as below.");
+            System.out.println("This project has following issues.");
+            System.out.println();
             for (int i = 0; i < issues.size(); i++) {
-                System.out.println("[" + (i + 1) + "]" + "Issue Name: " + issues.get(i).title + " | Status: " + issues.get(i).status + " | Priority: " + issues.get(i).priority + " | Description: " + issues.get(i).description);
+                System.out.println(green + "[" + (i + 1) + "]" + exit + "Issue Name: " + issues.get(i).title + " | Status: " + issues.get(i).state + " | Priority: " + issues.get(i).priority + " | Description: " + issues.get(i).description);
             }
+            System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             String input = Main.reader.readLine();
-            if(input.isEmpty()){
+            if (input.isEmpty()) {
                 continue;
-            }
-            else if (input.equals("help")) {
+            } else if (input.equals("help")) {
                 util.issueHelp();
             } else if (input.equals("exit")) {
                 break;
@@ -80,26 +86,36 @@ public class Main {
     }
 
     private static void travelProject() throws InterruptedException, IOException {
-        List<Project> projects = ProjectAPI.requestListOfProject();
+        List<Integer> myProjects = ProjectAPI.requestListOfProject();
+        List<Project> projects = new ArrayList<>();
+        List<Map<String, Object>> temp = browseEntireProjects();
         while (true) {
             util.clearConsole();
             System.out.println("There is projects as below.");
-            for (int i = 0; i < projects.size(); i++) {
-                System.out.println("[" + (i + 1) + "] " + "Project Name: " + projects.get(i).Name + " | Created Date: " + projects.get(i).CreatedDate + " | Description: " + projects.get(i).Description);
+            System.out.println();
+            for (int i = 0; i < temp.size(); i++) {
+                if (!myProjects.contains(temp.get(i).get("id"))) continue;
+                projects.add(new Project((int) temp.get(i).get("id"), (String) temp.get(i).get("name")));
+                System.out.println(green + "[" + temp.get(i).get("id") + "] " + exit + "Project Name: " + temp.get(i).get("name"));
             }
             System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             String input = reader.readLine();
-            if(input.isEmpty()){
+            if (input.isEmpty()) {
                 continue;
-            }
-            else if (input.equals("help")) {
+            } else if (input.equals("help")) {
                 util.projectsHelp();
             } else if (input.contains("goto")) {
                 String[] split = input.split(" ");
-                int index = Integer.parseInt(split[1]) - 1;
-                travelIssue(projects.get(index));
+                int index = Integer.parseInt(split[1]);
+                projects.stream().filter(project -> project.getId() == index).findFirst().ifPresent(project -> {
+                    try {
+                        travelIssue(project);
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                });
             } else if (input.equals("exit")) {
                 break;
             } else {
@@ -129,43 +145,24 @@ public class Main {
         String input = null;
         boolean signedIn = false;
 
-        util.clearConsole();
-        System.out.print("Enter 'signin' or 'signup' >> ");
-        input = reader.readLine();
-        while (!input.equals("signin") && !input.equals("signup")) {
-            util.clearConsole();
-            System.out.println("Wrong input. Try again.");
-            System.out.print("Enter 'signin' or 'signup' >> ");
-            input = reader.readLine();
-        }
-        //로그인/회원가입 로직
+        //로그인 로직
         while (true) {
             util.clearConsole();
-            if (signedIn) {
-                System.out.println("Signed in...");
-                break;
-            }
-            if (input.equals("signin")) {
-                System.out.print("Enter username >> ");
-                String username = reader.readLine();
-                System.out.print("Enter password >> ");
-                String password = reader.readLine();
-                user = new User(username, password);
-                signedIn = LoginAPI.requestSignin(user);
-            } else {
-                System.out.print("Enter username >> ");
-                String username = reader.readLine();
-                System.out.print("Enter password >> ");
-                String password = reader.readLine();
-                user = new User(username, password);
-                signedIn = LoginAPI.requestSignup(user);
-            }
+            if (signedIn) break;
+            System.out.print("Enter username >> ");
+            String identifier = reader.readLine();
+            System.out.print("Enter password >> ");
+            String password = reader.readLine();
+            user = new User(identifier, password);
+            signedIn = LoginAPI.requestSignin(user);
         }
         //서비스 로직
         label:
         while (true) {
             util.clearConsole();
+            System.out.println("Hello, " + user.getIdentifier() + "!");
             System.out.println("Welcome to Issue Management!");
+            System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             input = reader.readLine();
@@ -173,15 +170,36 @@ public class Main {
                 case "help":
                     util.mainHelp();
                     break;
-                case "make project":
+                case "register user":
+                    registerUser();
+                    break;
+                case "make project"://미완
                     makeProject();
                     break;
-                case "travel project":
+                case "travel project"://개발중
                     travelProject();
                     break;
                 case "exit":
                     break label;
+                default:
+                    util.wrondCommand();
             }
         }
+    }
+
+    private static void registerUser() throws IOException, InterruptedException {
+        String username, identifier, password, role;
+        util.clearConsole();
+        System.out.println("[Register a new user]");
+        System.out.print("Please enter the username >> ");
+        username = reader.readLine();
+        System.out.print("Please enter the identifier >> ");
+        identifier = reader.readLine();
+        System.out.print("Please enter the password >> ");
+        password = reader.readLine();
+        System.out.print("Please enter the role('admin', 'pl', 'dev', 'tester') >> ");
+        role = reader.readLine();
+        User newUser = new User(username, password, identifier);
+        requestRegister(newUser, role, user.getIdentifier());
     }
 }
