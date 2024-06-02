@@ -29,3 +29,6 @@ jar {
         attributes 'Main-Class': 'com.sweprj.Main'
     }
 }
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs << "-Xlint:unchecked"
+}

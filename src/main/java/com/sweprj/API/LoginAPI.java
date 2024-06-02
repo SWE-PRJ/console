@@ -32,7 +32,6 @@ public class LoginAPI {
     // send the register request
     public static void requestRegister(User user, String role, String adminIdentifier) throws InterruptedException {
         Map<String, String> body = Map.of(
-                "name", user.getUsername(),
                 "identifier", user.getIdentifier(),
                 "password", user.getPassword());
         Map response;

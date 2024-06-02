@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.sweprj.API.IssueAPI.requestCreateIssue;
 import static com.sweprj.API.LoginAPI.requestRegister;
 import static com.sweprj.API.ProjectAPI.browseEntireProjects;
 import static com.sweprj.Constant.textColor.exit;
@@ -32,8 +33,9 @@ public class Main {
             System.out.println("Priority: " + issue.getPriority());
             System.out.println("Comments: ");
             for (int i = 0; i < issue.getComments().size(); i++) {
-                System.out.println("  [" + issue.getComments().get(i).getId() + "] " + issue.getComments().get(i).getContent());
+                System.out.println(green + "  [" + issue.getComments().get(i).getId() + "] " + exit + issue.getComments().get(i).getContent());
             }
+            System.out.println("------------------------------------------");
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             String input = reader.readLine();
@@ -59,8 +61,9 @@ public class Main {
             System.out.println("This project has following issues.");
             System.out.println();
             for (int i = 0; i < issues.size(); i++) {
-                System.out.println(green + "[" + issues.get(i).getId() + "]" + exit + "Issue Name: " + issues.get(i).getTitle() + " | Status: " + issues.get(i).getTitle() + " | Priority: " + issues.get(i).getPriority() + " | Description: " + issues.get(i).getDescription());
+                System.out.println(green + "[" + issues.get(i).getId() + "]" + exit + "Issue Name: " + issues.get(i).getTitle() + " | Status: " + issues.get(i).getState() + " | Priority: " + issues.get(i).getPriority() + " | Description: " + issues.get(i).getDescription());
             }
+            System.out.println("------------------------------------------");
             System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
@@ -81,10 +84,28 @@ public class Main {
                         e.printStackTrace();
                     }
                 });
-            } else if (input.equals("create issue")) {
+            } else if (input.equals("create issue")) {//완료
+                System.out.print("Please enter the title of the issue >> ");
+                String title = reader.readLine();
+                System.out.print("Please enter the description of the issue >> ");
+                String description = reader.readLine();
+                System.out.print("Please enter the priority of the issue('blocker', 'critical', 'major', 'minor', 'trivial') >> ");
+                String priority = reader.readLine();
+                Issue issue = new Issue();
+                issue.setTitle(title);
+                issue.setDescription(description);
+                issue.setPriority(priority);
 
-            } else if (input.startsWith("edit issue")) {
+                requestCreateIssue(project.getId(), issue);
 
+            } else if (input.startsWith("edit issue")) {//완료
+                //NEW, ASSIGNED, RESOLVED, CLOSED, REOPENED
+                System.out.print("Please enter the new state of the issue('NEW', 'ASSIGNED', 'RESOLVED', 'CLOSED', 'REOPENED') >> ");
+                String state = reader.readLine();
+                String issueIdSTR = input.split(" ")[2];
+                int issueId = Integer.parseInt(issueIdSTR);
+
+                IssueAPI.requestChangeState(issueId, state);
             } else {
                 util.wrondCommand();
             }
@@ -139,7 +160,7 @@ public class Main {
                 case "help":
                     util.mainHelp();
                     break;
-                case "register user":
+                case "register user"://완료
                     registerUser();
                     break;
                 case "make project"://미완
@@ -157,11 +178,9 @@ public class Main {
     }
 
     private static void registerUser() throws IOException, InterruptedException {
-        String username, identifier, password, role;
+        String identifier, password, role;
         util.clearConsole();
         System.out.println("[Register a new user]");
-        System.out.print("Please enter the username >> ");
-        username = reader.readLine();
         System.out.print("Please enter the identifier >> ");
         identifier = reader.readLine();
         System.out.print("Please enter the password >> ");
@@ -169,7 +188,6 @@ public class Main {
         System.out.print("Please enter the role('admin', 'pl', 'dev', 'tester') >> ");
         role = reader.readLine();
         User newUser = new User();
-        newUser.setUsername(username);
         newUser.setIdentifier(identifier);
         newUser.setPassword(password);
         requestRegister(newUser, role, user.getIdentifier());
@@ -191,7 +209,7 @@ public class Main {
                 projects.add(project);
                 System.out.println(green + "[" + temp.get(i).get("id") + "] " + exit + "Project Name: " + temp.get(i).get("name"));
             }
-            System.out.println();
+            System.out.println("------------------------------------------");
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             String input = reader.readLine();
