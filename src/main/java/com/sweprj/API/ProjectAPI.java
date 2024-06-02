@@ -11,10 +11,9 @@ public class ProjectAPI {
         Map response;
         try {
             response = (Map) apiManager
-                    .post(String.format("/api/projects?name=%s", projectName), new HashMap<>(),false)
+                    .post(String.format("/api/projects?name=%s", projectName), new HashMap<>(), false)
                     .block();
         } catch (Exception e) {
-            apiManager.handleException();
             throw new InterruptedException();
         }
         return (int) ((Map<String, Object>) response).get("id");
@@ -23,7 +22,7 @@ public class ProjectAPI {
     public static void requestInviteMember(int projectId, String memberIdentifier) throws InterruptedException {
         try {
             apiManager
-                    .post(String.format("/api/projects/%d/%s", projectId, memberIdentifier), new HashMap<>(),true)
+                    .post(String.format("/api/projects/%d/%s", projectId, memberIdentifier), new HashMap<>(), true)
                     .block();
         } catch (Exception e) {
             apiManager.handleException();

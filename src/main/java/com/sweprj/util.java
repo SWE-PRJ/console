@@ -5,11 +5,16 @@ import com.sweprj.API.ApiManager;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.sweprj.Constant.textColor.exit;
-import static com.sweprj.Constant.textColor.red;
+import static com.sweprj.Constant.textColor.*;
 
 public class util {
     static ApiManager apiManager = ApiManager.getInstance();
+
+    public static void handleNoNumber() {
+        System.out.println();
+        System.out.println(red + "Please enter a number." + exit);
+        waitForEnter();
+    }
 
     public static void waitForEnter() {
         System.out.print("Press 'enter' to continue..");
@@ -46,10 +51,10 @@ public class util {
         util.clearConsole();
         System.out.println("Available commands:");
         System.out.println();
-        System.out.println("1. 'make project' - Create a new project" + red + "(Admin only)" + exit);
-        System.out.println("2. 'register user' - Register a new user" + red + "(Admin only)" + exit);
-        System.out.println("3. 'travel project' - Move to a project");
-        System.out.println("4. 'exit' - Exit the program");
+        System.out.println("1. '" + purple + "make project" + exit + "' - Create a new project" + red + "(Admin only)" + exit);
+        System.out.println("2. '" + purple + "register user" + exit + "' - Register a new user" + red + "(Admin only)" + exit);
+        System.out.println("3. '" + purple + "travel project" + exit + "' - Move to a project");
+        System.out.println("4. '" + purple + "exit" + exit + "' - Exit the program");
         System.out.println();
         waitForEnter();
     }
@@ -58,8 +63,8 @@ public class util {
         util.clearConsole();
         System.out.println("Available commands:");
         System.out.println();
-        System.out.println("1. 'goto [project id]' - Move to the project to see the issues");
-        System.out.println("2. 'exit' - Exit the directory");
+        System.out.println("1. '" + purple + "goto [project id]" + exit + "' - Move to the project to see the issues");
+        System.out.println("2. '" + purple + "exit" + exit + "' - Exit the directory");
         System.out.println();
         waitForEnter();
     }
@@ -68,10 +73,10 @@ public class util {
         util.clearConsole();
         System.out.println("Available commands:");
         System.out.println();
-        System.out.println("1. 'goto [issue index]' - Move to the issue");
-        System.out.println("2. 'edit issue [issue index]' - Edit the issue");
-        System.out.println("3. 'create issue' - Create a new issue");
-        System.out.println("4. 'exit' - Exit the project");
+        System.out.println("1. '" + purple + "goto [issue index]" + exit + "' - Move to the issue");
+        System.out.println("2. '" + purple + "edit issue [issue index]" + exit + "' - Edit the issue");
+        System.out.println("3. '" + purple + "create issue" + exit + "' - Create a new issue");
+        System.out.println("4. '" + purple + "exit" + exit + "' - Exit the project");
         System.out.println();
         waitForEnter();
     }
@@ -80,10 +85,10 @@ public class util {
         util.clearConsole();
         System.out.println();
         System.out.println("Available commands:");
-        System.out.println("1. 'add comment' - Add a comment to the issue");
-        System.out.println("2. 'edit comment [comment index]' - Edit the comment" + red + "(only admin || writer)" + exit);
-        System.out.println("3. 'delete comment [comment index]' - Delete the comment" + red + "(only admin || writer)" + exit);
-        System.out.println("4. 'exit' - Exit the issue");
+        System.out.println("1. '" + purple + "add comment" + exit + "' - Add a comment to the issue");
+        System.out.println("2. '" + purple + "edit comment [comment index]" + exit + "' - Edit the comment" + red + "(only admin || writer)" + exit);
+        System.out.println("3. '" + purple + "delete comment [comment index]" + exit + "' - Delete the comment" + red + "(only admin || writer)" + exit);
+        System.out.println("4. '" + purple + "exit" + exit + "' - Exit the issue");
         System.out.println();
         waitForEnter();
     }

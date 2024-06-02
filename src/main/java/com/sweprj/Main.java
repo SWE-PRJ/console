@@ -1,5 +1,6 @@
 package com.sweprj;
 
+import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.sweprj.API.CommentAPI;
 import com.sweprj.API.IssueAPI;
 import com.sweprj.API.LoginAPI;
@@ -42,9 +43,10 @@ public class Main {
             System.out.println("Priority: " + issue.getPriority());
             System.out.println("Comments: ");
             for (int i = 0; i < issue.getComments().size(); i++) {
-                System.out.println(green + "  [" + issue.getComments().get(i).getId() + "] " + exit + issue.getComments().get(i).getContent());
+                System.out.println(green+"└[" + issue.getComments().get(i).getId() + "] " + exit + issue.getComments().get(i).getContent());
             }
             System.out.println("------------------------------------------");
+            System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             String input = reader.readLine();
@@ -57,12 +59,20 @@ public class Main {
                 String content = reader.readLine();
                 CommentAPI.createComment(issue.getId(), content);
             } else if (input.startsWith("edit comment")) {
+                if(input.split(" ").length != 3) {
+                    util.handleNoNumber();
+                    continue;
+                }
                 String commentIdSTR = input.split(" ")[2];
                 int commentId = Integer.parseInt(commentIdSTR);
                 System.out.print("Please enter the new content of the comment >> ");
                 String content = reader.readLine();
                 CommentAPI.editComment(issueId, commentId, content);
             } else if (input.startsWith("delete comment")) {//완성
+                if(input.split(" ").length != 3) {
+                    util.handleNoNumber();
+                    continue;
+                }
                 String commentIdSTR = input.split(" ")[2];
                 int commentId = Integer.parseInt(commentIdSTR);
                 CommentAPI.deleteComment(issueId, commentId);
@@ -77,8 +87,9 @@ public class Main {
             List<Issue> issues = IssueAPI.requestListOfIssue(project.getId());
             util.clearConsole();
             System.out.println("You are now in the '" + cyan + project.Name + exit + "' project.");
-            System.out.println("This project has following issues.");
             System.out.println();
+            System.out.println("This project has following issues.");
+            System.out.println("------------------------------------------");
             for (int i = 0; i < issues.size(); i++) {
                 System.out.println(green + "[" + issues.get(i).getId() + "]" + exit + "Issue Name: " + issues.get(i).getTitle() + " | Status: " + issues.get(i).getState() + " | Priority: " + issues.get(i).getPriority() + " | Description: " + issues.get(i).getDescription());
             }
@@ -95,6 +106,10 @@ public class Main {
                 break;
             } else if (input.startsWith("goto")) {//개발중
                 String[] split = input.split(" ");
+                if(split.length != 2) {
+                    util.handleNoNumber();
+                    continue;
+                }
                 int index = Integer.parseInt(split[1]);
                 issues.stream().filter(issue -> issue.getId() == index).findFirst().ifPresent(issue -> {
                     try {
@@ -118,6 +133,10 @@ public class Main {
                 requestCreateIssue(project.getId(), issue);
 
             } else if (input.startsWith("edit issue")) {//완료
+                if(input.split(" ").length != 3) {
+                    util.handleNoNumber();
+                    continue;
+                }
                 //NEW, ASSIGNED, RESOLVED, CLOSED, REOPENED
                 System.out.print("Please enter the new state of the issue('NEW', 'ASSIGNED', 'RESOLVED', 'CLOSED', 'REOPENED') >> ");
                 String state = reader.readLine();
@@ -133,6 +152,9 @@ public class Main {
 
     public static void makeProject() {
         try {
+            util.clearConsole();
+            System.out.println(blue+"[Create a new project]"+exit);
+            System.out.println();
             System.out.print("Please enter the project name >> ");
             String projectName = reader.readLine();
             int projectId = requestCreateProject(projectName);
@@ -144,10 +166,10 @@ public class Main {
                 String memberName = reader.readLine();
                 ProjectAPI.requestInviteMember(projectId, memberName);
             }
+            System.out.println();
             System.out.println("Project has been created successfully.");
             waitForEnter();
         } catch (Exception e) {
-            e.printStackTrace();
             handleException();
         }
     }
@@ -160,6 +182,8 @@ public class Main {
         while (true) {
             util.clearConsole();
             if (signedIn) break;
+            System.out.println("Welcome to " + purple + "Issue Management" + exit + "!");
+            System.out.println();
             System.out.print("Enter username >> ");
             String identifier = reader.readLine();
             System.out.print("Enter password >> ");
@@ -203,7 +227,8 @@ public class Main {
     private static void registerUser() throws IOException, InterruptedException {
         String identifier, password, role;
         util.clearConsole();
-        System.out.println("[Register a new user]");
+        System.out.println(blue+"[Register a new user]"+exit);
+        System.out.println();
         System.out.print("Please enter the identifier >> ");
         identifier = reader.readLine();
         System.out.print("Please enter the password >> ");
@@ -222,8 +247,10 @@ public class Main {
         List<Map<String, Object>> temp = browseEntireProjects();
         while (true) {
             util.clearConsole();
-            System.out.println("There is projects as below.");
+            System.out.println("You are now in the " + cyan + "Projects" + exit + " directory.");
             System.out.println();
+            System.out.println("There is projects as below.");
+            System.out.println("------------------------------------------");
             for (int i = 0; i < temp.size(); i++) {
                 if (!myProjects.contains(temp.get(i).get("id"))) continue;
                 Project project = new Project();
@@ -233,6 +260,7 @@ public class Main {
                 System.out.println(green + "[" + temp.get(i).get("id") + "] " + exit + "Project Name: " + temp.get(i).get("name"));
             }
             System.out.println("------------------------------------------");
+            System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
             String input = reader.readLine();
@@ -240,8 +268,12 @@ public class Main {
                 continue;
             } else if (input.equals("help")) {
                 util.projectsHelp();
-            } else if (input.contains("goto")) {
+            } else if (input.startsWith("goto")) {
                 String[] split = input.split(" ");
+                if(split.length != 2) {
+                    util.handleNoNumber();
+                    continue;
+                }
                 int index = Integer.parseInt(split[1]);
                 projects.stream().filter(project -> project.getId() == index).findFirst().ifPresent(project -> {
                     try {

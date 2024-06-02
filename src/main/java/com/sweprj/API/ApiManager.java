@@ -11,6 +11,9 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Map;
 
+import static com.sweprj.Constant.textColor.exit;
+import static com.sweprj.Constant.textColor.red;
+
 public class ApiManager {
     private String token;
     private final String baseUrl = "http://localhost:8080";
@@ -112,7 +115,8 @@ public class ApiManager {
     }
 
     public static void handleException() {
-        System.out.println("An error occurred. Please try again.");
+        System.out.println();
+        System.out.println(red + "An error occurred. Please try again." + exit);
         util.waitForEnter();
     }
 
