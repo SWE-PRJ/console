@@ -81,8 +81,8 @@ public class util {
         System.out.println();
         System.out.println("Available commands:");
         System.out.println("1. 'add comment' - Add a comment to the issue");
-        System.out.println("2. 'edit comment [comment index]' - Edit the comment");
-        System.out.println("3. 'delete comment [comment index]' - Delete the comment");
+        System.out.println("2. 'edit comment [comment index]' - Edit the comment" + red + "(only admin || writer)" + exit);
+        System.out.println("3. 'delete comment [comment index]' - Delete the comment" + red + "(only admin || writer)" + exit);
         System.out.println("4. 'exit' - Exit the issue");
         System.out.println();
         waitForEnter();

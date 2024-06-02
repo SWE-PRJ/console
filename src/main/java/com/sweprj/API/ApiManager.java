@@ -43,13 +43,13 @@ public class ApiManager {
     }
 
     //post request
-    public Mono<?> post(String uri, Map<String, String> body,boolean isText) {
+    public Mono<?> post(String uri, Map<String, String> body, boolean isText) {
         return webClient.post()
                 .uri(uri)
                 .bodyValue(body)
                 .exchangeToMono(response -> {
                     if (response.statusCode().is2xxSuccessful()) {
-                        return response.bodyToMono(isText? String.class: Map.class);
+                        return response.bodyToMono(isText ? String.class : Map.class);
                     } else {
                         // Turn to error
                         return response.createError();
@@ -86,6 +86,19 @@ public class ApiManager {
                 });
     }
 
+    //delete request
+    public Mono<Map> delete(String uri) {
+        return webClient.delete()
+                .uri(uri)
+                .exchangeToMono(response -> {
+                    if (response.statusCode().equals(HttpStatus.OK)) {
+                        return response.bodyToMono(Map.class);
+                    } else {
+                        // Turn to error
+                        return response.createError();
+                    }
+                });
+    }
 
     private void setupRequest() {
         util.clearConsole();

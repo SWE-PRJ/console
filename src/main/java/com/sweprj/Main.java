@@ -57,7 +57,15 @@ public class Main {
                 String content = reader.readLine();
                 CommentAPI.createComment(issue.getId(), content);
             } else if (input.startsWith("edit comment")) {
-
+                String commentIdSTR = input.split(" ")[2];
+                int commentId = Integer.parseInt(commentIdSTR);
+                System.out.print("Please enter the new content of the comment >> ");
+                String content = reader.readLine();
+                CommentAPI.editComment(issueId, commentId, content);
+            } else if (input.startsWith("delete comment")) {//완성
+                String commentIdSTR = input.split(" ")[2];
+                int commentId = Integer.parseInt(commentIdSTR);
+                CommentAPI.deleteComment(issueId, commentId);
             } else {
                 util.wrondCommand();
             }
