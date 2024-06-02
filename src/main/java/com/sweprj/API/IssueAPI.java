@@ -10,6 +10,31 @@ import java.util.Map;
 public class IssueAPI {
     static ApiManager apiManager = ApiManager.getInstance();
 
+    //이슈 생성
+    public static void requestCreateIssue(int projectId, Issue issue) throws InterruptedException {
+        Map<String, String> body = Map.of(
+                "title", issue.getTitle(),
+                "description", issue.getDescription(),
+                "priority", issue.getPriority());
+        try {
+            apiManager.post("/api/projects/" + projectId + "/issues", body).block();
+        } catch (Exception e) {
+            apiManager.handleException();
+            throw new InterruptedException();
+        }
+    }
+
+    //이슈 상태 변경
+    public static void requestChangeState(int issueId, String state) throws InterruptedException {
+        Map<String, String> body = Map.of("state", state);
+        try {
+            apiManager.patch("/api/issues/" + issueId, body).block();
+        } catch (Exception e) {
+            apiManager.handleException();
+            throw new InterruptedException();
+        }
+    }
+
     //프로젝트에 속한 이슈 검색
     public static List<Issue> requestListOfIssue(int projectId) throws InterruptedException {
         List<Issue> issues = new ArrayList<>();
