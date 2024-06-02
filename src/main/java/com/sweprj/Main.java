@@ -154,6 +154,8 @@ public class Main {
             util.clearConsole();
             System.out.println(blue + "[Create a new project]" + exit);
             System.out.println();
+            if(user.getRole().equals("dev") || user.getRole().equals("tester") || user.getRole().equals("pl"))
+                throw new Exception("You are not allowed to create a project.");
             System.out.print("Please enter the project name >> ");
             String projectName = reader.readLine();
             int projectId = requestCreateProject(projectName);

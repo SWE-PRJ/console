@@ -26,15 +26,15 @@ public class LoginAPI {
             obj.put(entry.getKey().toString(), entry.getValue().toString());
         }
         apiManager.setToken(obj.get("token"));
+        user.setRole(obj.get("role"));
         return true;
     }
 
     // send the register request
-    public static void requestRegister(User user, String role, String adminIdentifier) throws InterruptedException {
+    public static void requestRegister(User user, String role, String adminIdentifier) {
         Map<String, String> body = Map.of(
                 "identifier", user.getIdentifier(),
                 "password", user.getPassword());
-
         try {
             apiManager
                     .post(String.format("/admin/register?role=%s&adminIdentifier=%s", role, adminIdentifier), body, false)

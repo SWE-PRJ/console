@@ -4,8 +4,10 @@ import com.sweprj.API.ApiManager;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Scanner;
 
 import static com.sweprj.Constant.textColor.*;
+import static com.sweprj.Main.reader;
 
 public class util {
     static ApiManager apiManager = ApiManager.getInstance();
@@ -19,7 +21,7 @@ public class util {
     public static void waitForEnter() {
         System.out.print("Press 'enter' to continue..");
         try {
-            System.in.read();
+            reader.readLine();
         } catch (IOException e) {
             e.printStackTrace();
         }
