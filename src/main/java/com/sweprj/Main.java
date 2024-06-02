@@ -1,5 +1,6 @@
 package com.sweprj;
 
+import com.sweprj.API.CommentAPI;
 import com.sweprj.API.IssueAPI;
 import com.sweprj.API.LoginAPI;
 import com.sweprj.API.ProjectAPI;
@@ -13,20 +14,28 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static com.sweprj.API.ApiManager.handleException;
 import static com.sweprj.API.IssueAPI.requestCreateIssue;
 import static com.sweprj.API.LoginAPI.requestRegister;
 import static com.sweprj.API.ProjectAPI.browseEntireProjects;
-import static com.sweprj.Constant.textColor.exit;
-import static com.sweprj.Constant.textColor.green;
+import static com.sweprj.API.ProjectAPI.requestCreateProject;
+import static com.sweprj.Constant.textColor.*;
+import static com.sweprj.util.waitForEnter;
 
 public class Main {
     static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     static User user = null;
 
-    public static void showDetailIssue(Issue issue) throws IOException, InterruptedException {
+    public static void showDetailIssue(int projectId, int issueId) throws IOException, InterruptedException {
         while (true) {
+            List<Issue> issues = IssueAPI.requestListOfIssue(projectId);
+            AtomicReference<Issue> issueRef = new AtomicReference<>();
+            Issue issue;
             util.clearConsole();
+            issues.stream().filter(issueObj -> issueObj.getId() == issueId).findFirst().ifPresent(issueRef::set);
+            issue = issueRef.get();
             System.out.println("Issue Name: " + issue.getTitle());
             System.out.println("Description: " + issue.getDescription());
             System.out.println("Status: " + issue.getState());
@@ -44,9 +53,19 @@ public class Main {
             } else if (input.equals("exit")) {
                 break;
             } else if (input.equals("add comment")) {
-
-            } else if (input.equals("edit comment")) {
-
+                System.out.print("Please enter the content of the comment >> ");
+                String content = reader.readLine();
+                CommentAPI.createComment(issue.getId(), content);
+            } else if (input.startsWith("edit comment")) {
+                String commentIdSTR = input.split(" ")[2];
+                int commentId = Integer.parseInt(commentIdSTR);
+                System.out.print("Please enter the new content of the comment >> ");
+                String content = reader.readLine();
+                CommentAPI.editComment(issueId, commentId, content);
+            } else if (input.startsWith("delete comment")) {//완성
+                String commentIdSTR = input.split(" ")[2];
+                int commentId = Integer.parseInt(commentIdSTR);
+                CommentAPI.deleteComment(issueId, commentId);
             } else {
                 util.wrondCommand();
             }
@@ -57,7 +76,7 @@ public class Main {
         while (true) {
             List<Issue> issues = IssueAPI.requestListOfIssue(project.getId());
             util.clearConsole();
-            System.out.println("You are now in the '" + project.Name + "' project.");
+            System.out.println("You are now in the '" + cyan + project.Name + exit + "' project.");
             System.out.println("This project has following issues.");
             System.out.println();
             for (int i = 0; i < issues.size(); i++) {
@@ -79,7 +98,7 @@ public class Main {
                 int index = Integer.parseInt(split[1]);
                 issues.stream().filter(issue -> issue.getId() == index).findFirst().ifPresent(issue -> {
                     try {
-                        showDetailIssue(issue);
+                        showDetailIssue(project.getId(), index);
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -112,21 +131,25 @@ public class Main {
         }
     }
 
-    public static void makeProject() throws InterruptedException, IOException {
-        System.out.print("Please enter the project name >> ");
-        String projectName = reader.readLine();
-        int member;
-        System.out.print("Please enter the number of member you want to invite >> ");
-        String memberSTR = reader.readLine();
-        member = Integer.parseInt(memberSTR);
-        for (int i = 0; i < member; i++) {
-            System.out.print("Please enter the member name >> ");
-            String memberName = reader.readLine();
-            ProjectAPI.requestInviteMember(memberName);
+    public static void makeProject() {
+        try {
+            System.out.print("Please enter the project name >> ");
+            String projectName = reader.readLine();
+            int projectId = requestCreateProject(projectName);
+            ProjectAPI.requestInviteMember(projectId, user.getIdentifier());
+            System.out.print("Please enter the number of member you want to invite >> ");
+            int member = Integer.parseInt(reader.readLine());
+            for (int i = 0; i < member; i++) {
+                System.out.print("Please enter the member name >> ");
+                String memberName = reader.readLine();
+                ProjectAPI.requestInviteMember(projectId, memberName);
+            }
+            System.out.println("Project has been created successfully.");
+            waitForEnter();
+        } catch (Exception e) {
+            e.printStackTrace();
+            handleException();
         }
-        System.out.println("Creating a new project...");
-        ProjectAPI.requestCreateProject(user);
-        System.out.println("Project created successfully.");
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -150,8 +173,8 @@ public class Main {
         label:
         while (true) {
             util.clearConsole();
-            System.out.println("Hello, " + user.getIdentifier() + "!");
-            System.out.println("Welcome to Issue Management!");
+            System.out.println("Hello, " + yellow + user.getIdentifier() + exit + "!");
+            System.out.println("Welcome to " + purple + "Issue Management" + exit + "!");
             System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
@@ -163,7 +186,7 @@ public class Main {
                 case "register user"://완료
                     registerUser();
                     break;
-                case "make project"://미완
+                case "make project"://완료
                     makeProject();
                     break;
                 case "travel project"://개발중

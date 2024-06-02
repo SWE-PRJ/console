@@ -17,7 +17,7 @@ public class IssueAPI {
                 "description", issue.getDescription(),
                 "priority", issue.getPriority());
         try {
-            apiManager.post("/api/projects/" + projectId + "/issues", body).block();
+            apiManager.post("/api/projects/" + projectId + "/issues", body,false).block();
         } catch (Exception e) {
             apiManager.handleException();
             throw new InterruptedException();
@@ -77,4 +77,5 @@ public class IssueAPI {
         }
         return comments;
     }
+
 }

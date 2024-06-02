@@ -46,8 +46,8 @@ public class util {
         util.clearConsole();
         System.out.println("Available commands:");
         System.out.println();
-        System.out.println("1. 'make project' - Create a new project(Admin only)");
-        System.out.println("2. 'register user' - Register a new user(Admin only)");
+        System.out.println("1. 'make project' - Create a new project" + red + "(Admin only)" + exit);
+        System.out.println("2. 'register user' - Register a new user" + red + "(Admin only)" + exit);
         System.out.println("3. 'travel project' - Move to a project");
         System.out.println("4. 'exit' - Exit the program");
         System.out.println();
@@ -81,8 +81,8 @@ public class util {
         System.out.println();
         System.out.println("Available commands:");
         System.out.println("1. 'add comment' - Add a comment to the issue");
-        System.out.println("2. 'edit comment [comment index]' - Edit the comment");
-        System.out.println("3. 'delete comment [comment index]' - Delete the comment");
+        System.out.println("2. 'edit comment [comment index]' - Edit the comment" + red + "(only admin || writer)" + exit);
+        System.out.println("3. 'delete comment [comment index]' - Delete the comment" + red + "(only admin || writer)" + exit);
         System.out.println("4. 'exit' - Exit the issue");
         System.out.println();
         waitForEnter();
