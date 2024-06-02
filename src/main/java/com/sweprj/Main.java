@@ -1,5 +1,6 @@
 package com.sweprj;
 
+import com.sweprj.API.CommentAPI;
 import com.sweprj.API.IssueAPI;
 import com.sweprj.API.LoginAPI;
 import com.sweprj.API.ProjectAPI;
@@ -13,6 +14,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.sweprj.API.ApiManager.handleException;
 import static com.sweprj.API.IssueAPI.requestCreateIssue;
@@ -26,9 +28,14 @@ public class Main {
     static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
     static User user = null;
 
-    public static void showDetailIssue(Issue issue) throws IOException, InterruptedException {
+    public static void showDetailIssue(int projectId, int issueId) throws IOException, InterruptedException {
         while (true) {
+            List<Issue> issues = IssueAPI.requestListOfIssue(projectId);
+            AtomicReference<Issue> issueRef = new AtomicReference<>();
+            Issue issue;
             util.clearConsole();
+            issues.stream().filter(issueObj -> issueObj.getId() == issueId).findFirst().ifPresent(issueRef::set);
+            issue = issueRef.get();
             System.out.println("Issue Name: " + issue.getTitle());
             System.out.println("Description: " + issue.getDescription());
             System.out.println("Status: " + issue.getState());
@@ -46,8 +53,10 @@ public class Main {
             } else if (input.equals("exit")) {
                 break;
             } else if (input.equals("add comment")) {
-
-            } else if (input.equals("edit comment")) {
+                System.out.print("Please enter the content of the comment >> ");
+                String content = reader.readLine();
+                CommentAPI.createComment(issue.getId(), content);
+            } else if (input.startsWith("edit comment")) {
 
             } else {
                 util.wrondCommand();
@@ -81,7 +90,7 @@ public class Main {
                 int index = Integer.parseInt(split[1]);
                 issues.stream().filter(issue -> issue.getId() == index).findFirst().ifPresent(issue -> {
                     try {
-                        showDetailIssue(issue);
+                        showDetailIssue(project.getId(), index);
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
