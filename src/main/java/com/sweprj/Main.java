@@ -14,11 +14,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static com.sweprj.API.ApiManager.handleException;
 import static com.sweprj.API.IssueAPI.requestCreateIssue;
 import static com.sweprj.API.LoginAPI.requestRegister;
 import static com.sweprj.API.ProjectAPI.browseEntireProjects;
-import static com.sweprj.Constant.textColor.exit;
-import static com.sweprj.Constant.textColor.green;
+import static com.sweprj.API.ProjectAPI.requestCreateProject;
+import static com.sweprj.Constant.textColor.*;
+import static com.sweprj.util.waitForEnter;
 
 public class Main {
     static BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -57,7 +59,7 @@ public class Main {
         while (true) {
             List<Issue> issues = IssueAPI.requestListOfIssue(project.getId());
             util.clearConsole();
-            System.out.println("You are now in the '" + project.Name + "' project.");
+            System.out.println("You are now in the '" + cyan + project.Name + exit + "' project.");
             System.out.println("This project has following issues.");
             System.out.println();
             for (int i = 0; i < issues.size(); i++) {
@@ -112,21 +114,25 @@ public class Main {
         }
     }
 
-    public static void makeProject() throws InterruptedException, IOException {
-        System.out.print("Please enter the project name >> ");
-        String projectName = reader.readLine();
-        int member;
-        System.out.print("Please enter the number of member you want to invite >> ");
-        String memberSTR = reader.readLine();
-        member = Integer.parseInt(memberSTR);
-        for (int i = 0; i < member; i++) {
-            System.out.print("Please enter the member name >> ");
-            String memberName = reader.readLine();
-            ProjectAPI.requestInviteMember(memberName);
+    public static void makeProject() {
+        try {
+            System.out.print("Please enter the project name >> ");
+            String projectName = reader.readLine();
+            int projectId = requestCreateProject(projectName);
+            ProjectAPI.requestInviteMember(projectId, user.getIdentifier());
+            System.out.print("Please enter the number of member you want to invite >> ");
+            int member = Integer.parseInt(reader.readLine());
+            for (int i = 0; i < member; i++) {
+                System.out.print("Please enter the member name >> ");
+                String memberName = reader.readLine();
+                ProjectAPI.requestInviteMember(projectId, memberName);
+            }
+            System.out.println("Project has been created successfully.");
+            waitForEnter();
+        } catch (Exception e) {
+            e.printStackTrace();
+            handleException();
         }
-        System.out.println("Creating a new project...");
-        ProjectAPI.requestCreateProject(user);
-        System.out.println("Project created successfully.");
     }
 
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -150,8 +156,8 @@ public class Main {
         label:
         while (true) {
             util.clearConsole();
-            System.out.println("Hello, " + user.getIdentifier() + "!");
-            System.out.println("Welcome to Issue Management!");
+            System.out.println("Hello, " + yellow + user.getIdentifier() + exit + "!");
+            System.out.println("Welcome to " + purple + "Issue Management" + exit + "!");
             System.out.println();
             System.out.println("Please type command. Type 'help' to see the list of commands.");
             System.out.print(">> ");
@@ -163,7 +169,7 @@ public class Main {
                 case "register user"://완료
                     registerUser();
                     break;
-                case "make project"://미완
+                case "make project"://완료
                     makeProject();
                     break;
                 case "travel project"://개발중

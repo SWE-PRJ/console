@@ -15,7 +15,7 @@ public class LoginAPI {
                 "password", user.getPassword());
         Map response;
         try {
-            response = apiManager.post("/login", body).block();
+            response = (Map) apiManager.post("/login", body, false).block();
         } catch (Exception e) {
             apiManager.handleException();
             return false;
@@ -34,10 +34,10 @@ public class LoginAPI {
         Map<String, String> body = Map.of(
                 "identifier", user.getIdentifier(),
                 "password", user.getPassword());
-        Map response;
+
         try {
-            response = apiManager
-                    .post(String.format("/admin/register?role=%s&adminIdentifier=%s", role, adminIdentifier), body)
+            apiManager
+                    .post(String.format("/admin/register?role=%s&adminIdentifier=%s", role, adminIdentifier), body, false)
                     .block();
         } catch (Exception e) {
             apiManager.handleException();
