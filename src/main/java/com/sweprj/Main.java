@@ -1,6 +1,5 @@
 package com.sweprj;
 
-import com.fasterxml.jackson.databind.deser.std.StdScalarDeserializer;
 import com.sweprj.API.CommentAPI;
 import com.sweprj.API.IssueAPI;
 import com.sweprj.API.LoginAPI;
@@ -43,7 +42,7 @@ public class Main {
             System.out.println("Priority: " + issue.getPriority());
             System.out.println("Comments: ");
             for (int i = 0; i < issue.getComments().size(); i++) {
-                System.out.println(green+"└[" + issue.getComments().get(i).getId() + "] " + exit + issue.getComments().get(i).getContent());
+                System.out.println(green + "└[" + issue.getComments().get(i).getId() + "] " + exit + issue.getComments().get(i).getContent());
             }
             System.out.println("------------------------------------------");
             System.out.println();
@@ -59,7 +58,7 @@ public class Main {
                 String content = reader.readLine();
                 CommentAPI.createComment(issue.getId(), content);
             } else if (input.startsWith("edit comment")) {
-                if(input.split(" ").length != 3) {
+                if (input.split(" ").length != 3) {
                     util.handleNoNumber();
                     continue;
                 }
@@ -69,7 +68,7 @@ public class Main {
                 String content = reader.readLine();
                 CommentAPI.editComment(issueId, commentId, content);
             } else if (input.startsWith("delete comment")) {//완성
-                if(input.split(" ").length != 3) {
+                if (input.split(" ").length != 3) {
                     util.handleNoNumber();
                     continue;
                 }
@@ -104,9 +103,9 @@ public class Main {
                 util.issueHelp();
             } else if (input.equals("exit")) {
                 break;
-            } else if (input.startsWith("goto")) {//개발중
+            } else if (input.startsWith("goto")) {//완료
                 String[] split = input.split(" ");
-                if(split.length != 2) {
+                if (split.length != 2) {
                     util.handleNoNumber();
                     continue;
                 }
@@ -133,7 +132,7 @@ public class Main {
                 requestCreateIssue(project.getId(), issue);
 
             } else if (input.startsWith("edit issue")) {//완료
-                if(input.split(" ").length != 3) {
+                if (input.split(" ").length != 3) {
                     util.handleNoNumber();
                     continue;
                 }
@@ -153,7 +152,7 @@ public class Main {
     public static void makeProject() {
         try {
             util.clearConsole();
-            System.out.println(blue+"[Create a new project]"+exit);
+            System.out.println(blue + "[Create a new project]" + exit);
             System.out.println();
             System.out.print("Please enter the project name >> ");
             String projectName = reader.readLine();
@@ -213,7 +212,7 @@ public class Main {
                 case "make project"://완료
                     makeProject();
                     break;
-                case "travel project"://개발중
+                case "travel project"://완료
                     travelProject();
                     break;
                 case "exit":
@@ -227,7 +226,7 @@ public class Main {
     private static void registerUser() throws IOException, InterruptedException {
         String identifier, password, role;
         util.clearConsole();
-        System.out.println(blue+"[Register a new user]"+exit);
+        System.out.println(blue + "[Register a new user]" + exit);
         System.out.println();
         System.out.print("Please enter the identifier >> ");
         identifier = reader.readLine();
@@ -270,7 +269,7 @@ public class Main {
                 util.projectsHelp();
             } else if (input.startsWith("goto")) {
                 String[] split = input.split(" ");
-                if(split.length != 2) {
+                if (split.length != 2) {
                     util.handleNoNumber();
                     continue;
                 }

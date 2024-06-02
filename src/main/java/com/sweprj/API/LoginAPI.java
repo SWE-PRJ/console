@@ -17,7 +17,7 @@ public class LoginAPI {
         try {
             response = (Map) apiManager.post("/login", body, false).block();
         } catch (Exception e) {
-            apiManager.handleException();
+            ApiManager.handleException();
             return false;
         }
         Map<String, String> obj = new HashMap<String, String>();
@@ -40,7 +40,7 @@ public class LoginAPI {
                     .post(String.format("/admin/register?role=%s&adminIdentifier=%s", role, adminIdentifier), body, false)
                     .block();
         } catch (Exception e) {
-            apiManager.handleException();
+            ApiManager.handleException();
         }
     }
 }

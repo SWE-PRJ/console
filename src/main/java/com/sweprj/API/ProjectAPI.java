@@ -25,7 +25,7 @@ public class ProjectAPI {
                     .post(String.format("/api/projects/%d/%s", projectId, memberIdentifier), new HashMap<>(), true)
                     .block();
         } catch (Exception e) {
-            apiManager.handleException();
+            ApiManager.handleException();
             throw new InterruptedException();
         }
     }
@@ -36,7 +36,7 @@ public class ProjectAPI {
         try {
             response = (Map) apiManager.get("/me", false).block();
         } catch (Exception e) {
-            apiManager.handleException();
+            ApiManager.handleException();
             throw new InterruptedException();
         }
         projects = (List<Integer>) response.get("projects");
@@ -48,7 +48,7 @@ public class ProjectAPI {
         try {
             response = (List<Map<String, Object>>) apiManager.get("/api/projects", true).block();
         } catch (Exception e) {
-            apiManager.handleException();
+            ApiManager.handleException();
             throw new InterruptedException();
         }
         return response;

@@ -1,6 +1,8 @@
 package com.sweprj.API;
 
 import com.sweprj.util;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -15,17 +17,24 @@ import static com.sweprj.Constant.textColor.exit;
 import static com.sweprj.Constant.textColor.red;
 
 public class ApiManager {
-    private String token;
-    private final String baseUrl = "http://localhost:8080";
+    @Getter
     private static final com.sweprj.API.ApiManager instance = new com.sweprj.API.ApiManager();
+    private final String baseUrl = "http://localhost:8080";
+    @Setter
+    private String token;
     final WebClient webClient = WebClient.
             builder()
             .baseUrl(baseUrl)
             .filter(this::addAuthorizationHeader)
             .build();
 
-    public void setToken(String token) {
-        this.token = token;
+    private ApiManager() {
+    }
+
+    public static void handleException() {
+        System.out.println();
+        System.out.println(red + "An error occurred. Please try again." + exit);
+        util.waitForEnter();
     }
 
     private Mono<ClientResponse> addAuthorizationHeader(ClientRequest request, ExchangeFunction next) {
@@ -36,13 +45,6 @@ public class ApiManager {
                 .header("Authorization", "Bearer " + token)
                 .build();
         return next.exchange(authorizedRequest);
-    }
-
-    private ApiManager() {
-    }
-
-    public static com.sweprj.API.ApiManager getInstance() {
-        return instance;
     }
 
     //post request
@@ -101,26 +103,5 @@ public class ApiManager {
                         return response.createError();
                     }
                 });
-    }
-
-    private void setupRequest() {
-        util.clearConsole();
-        System.out.println("Waiting for response...");
-    }
-
-    private void clearRequest() {
-        System.out.println("Process was done.");
-        System.out.println("Press enter to continue...");
-        util.waitForEnter();
-    }
-
-    public static void handleException() {
-        System.out.println();
-        System.out.println(red + "An error occurred. Please try again." + exit);
-        util.waitForEnter();
-    }
-
-    void responseProcessing() {
-
     }
 }

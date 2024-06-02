@@ -17,9 +17,9 @@ public class IssueAPI {
                 "description", issue.getDescription(),
                 "priority", issue.getPriority());
         try {
-            apiManager.post("/api/projects/" + projectId + "/issues", body,false).block();
+            apiManager.post("/api/projects/" + projectId + "/issues", body, false).block();
         } catch (Exception e) {
-            apiManager.handleException();
+            ApiManager.handleException();
             throw new InterruptedException();
         }
     }
@@ -30,7 +30,7 @@ public class IssueAPI {
         try {
             apiManager.patch("/api/issues/" + issueId, body).block();
         } catch (Exception e) {
-            apiManager.handleException();
+            ApiManager.handleException();
             throw new InterruptedException();
         }
     }
@@ -42,11 +42,11 @@ public class IssueAPI {
         try {
             response = (Map<String, Object>) apiManager.get("/api/projects/" + projectId + "/issues", false).block();
         } catch (Exception e) {
-            apiManager.handleException();
+            ApiManager.handleException();
             throw new InterruptedException();
         }
         ((List<Map<String, Object>>) (response.get("issues"))).forEach(issue -> {
-            Map<String, Object> issueMap = (Map<String, Object>) issue;
+            Map<String, Object> issueMap = issue;
             Issue issueObj = new Issue();
             issueObj.setId((int) issueMap.get("id"));
             issueObj.setTitle((String) issueMap.get("title"));
@@ -54,7 +54,7 @@ public class IssueAPI {
             issueObj.setState((String) issueMap.get("state"));
             issueObj.setPriority((String) issueMap.get("priority"));
             ((List<Map<String, Object>>) (issueMap.get("comments"))).forEach(comment -> {
-                Map<String, Object> commentMap = (Map<String, Object>) comment;
+                Map<String, Object> commentMap = comment;
                 Comment commentObj = new Comment();
                 commentObj.setId((int) commentMap.get("id"));
                 commentObj.setIssueId((int) commentMap.get("issueId"));
@@ -65,17 +65,4 @@ public class IssueAPI {
         });
         return issues;
     }
-
-    //이슈에 속한 코멘트 조회
-    public static List<Comment> requestListOfComment(int issueId) throws InterruptedException {
-        List<Comment> comments = List.of();
-        try {
-            comments = (List<Comment>) apiManager.get("/api/issues/" + issueId + "/comments", false).block();
-        } catch (Exception e) {
-            apiManager.handleException();
-            throw new InterruptedException();
-        }
-        return comments;
-    }
-
 }
